@@ -1,0 +1,7 @@
+*~
+*.pyc
+python/__*
+python/plots
+*.aux
+*.log
+doc/

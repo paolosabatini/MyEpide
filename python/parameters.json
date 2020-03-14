@@ -1,0 +1,37 @@
+{
+    "parameters_nominal" :
+    { "beta" : 2e-5,
+      "k" : 6,
+      "gamma": 2e-4,
+      "delta": 0.3,
+      "mu" : 0.2,
+      "d" : 5e-3,
+      "d1": 5e-3,
+      "d2": 1e-3,
+      "tau": 5,
+      "N": 10000
+    },    
+    "parameters_alternative" :
+    { "beta" : 5e-2,
+      "k" : 6,
+      "gamma": 2e-4,
+      "delta": 0.3,
+      "mu" : 0.2,
+      "d" : 5e-3,
+      "d1": 5e-3,
+      "d2": 1e-3,
+      "tau": 5,
+      "N": 10000
+    },    
+    "initial_conditions" :
+    {
+        "i0" : 1e-3
+    },
+
+    "simulation_parameters":
+    {
+	"TIME_MAX" :  120,
+	"SET_OF_PARAMETERS" : "parameters_alternative",
+	"VERBOSE" : "FALSE"
+    }
+}
