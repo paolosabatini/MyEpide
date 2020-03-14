@@ -3,9 +3,11 @@
 import json
 
 if __name__ == "__main__":
-    print ("** Easy simulation of epidemy spreading **")
+    print ("*************************************")
+    print ("** Simulation of epidemy spreading **")
+    print ("*************************************")
     parameter_file = "parameters.json"
-    print ("\n Parameter file: "+parameter_file)
+    print ("\nParameter file: "+parameter_file)
     with open(parameter_file, 'r') as f:
         parameters_store = json.load(f)
 
@@ -31,6 +33,7 @@ if __name__ == "__main__":
     
     
     # Creation of the history
+    print ('\nCalculation with settings: '+str(SET_OF_PARAMETERS))
     for t in range (1, parameters_store["simulation_parameters"]["TIME_MAX"]):
         if (int (t)%int (parameters_store["simulation_parameters"]["TIME_MAX"]/10)==0): print ("-> time "+str(t))
         if parameters_store["simulation_parameters"]["VERBOSE"] == "TRUE": print ("TIME "+str(t))
@@ -51,36 +54,42 @@ if __name__ == "__main__":
         
         history[t] = tmp_event
 
-    
-    import matplotlib.pyplot as plt
-    import numpy as np
-
-    #Summary plot
-    fig, ax = plt.subplots()
-    ax.plot ([t for t in history],[e.S for t,e in history.items()], 'k--', label='Susceptible')
-    ax.plot ([t for t in history],[e.E for t,e in history.items()], 'y', label='Exposed')
-    ax.plot ([t for t in history],[e.I for t,e in history.items()], 'r', label='Infected')
-    ax.plot ([t for t in history], [e.Q for t,e in history.items()], 'b', label='Quarantined' )
-    ax.plot ([t for t in history], [e.R for t,e in history.items()], 'g--', label='Recovered')
-    ax.set_xlabel ("Time [days]")
-    plt.ylim ( (1, 1.5*parameters_store[SET_OF_PARAMETERS]["N"]) )
-    #plt.yscale('log')
-    legend = ax.legend(loc='upper right', frameon=False)
-    font_size = 10
-    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$\beta='+str(parameters_store[SET_OF_PARAMETERS]["beta"])+'$', fontsize=font_size)
-    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.90)*(plt.ylim()[1]-plt.ylim()[0]), r'$k='+str(parameters_store[SET_OF_PARAMETERS]["k"])+'$', fontsize=font_size)
-    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\gamma='+str(parameters_store[SET_OF_PARAMETERS]["gamma"])+'$', fontsize=font_size)
-    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\mu='+str(parameters_store[SET_OF_PARAMETERS]["mu"])+'$', fontsize=font_size)
-    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$d_{1}='+str(parameters_store[SET_OF_PARAMETERS]["d1"])+'$', fontsize=font_size)
-    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.90)*(plt.ylim()[1]-plt.ylim()[0]), r'$d_{2}='+str(parameters_store[SET_OF_PARAMETERS]["d2"])+'$', fontsize=font_size)
-    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\delta='+str(parameters_store[SET_OF_PARAMETERS]["delta"])+'$', fontsize=font_size)
-    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\tau='+str(parameters_store[SET_OF_PARAMETERS]["tau"])+'$', fontsize=font_size)
-
-    fig.savefig("plots/Summary_"+SET_OF_PARAMETERS+".pdf", bbox_inches='tight')
-
+    from plotting import plot_summary
+    plot_summary (history, parameters_store, SET_OF_PARAMETERS)
 
     # #Test plot
     # test_fig, test_ax = plt.subplots()
     # test_ax.plot ([t for t in history],[e.test for t,e in history.items()], 'black')
     # test_ax.set_xlabel ("Time [days]")
     # plt.show()
+
+
+    if parameters_store["simulation_parameters"]["SCAN_PARAMETERS"] == "TRUE":
+        factors = [0.1,0.5,1,2,10]
+        histories_for_scan = dict()
+        print('\n\nStarting scan over parameters to check the effect')
+        parameters_store_hard_copy = parameters_store
+        for k,v in parameters_store_hard_copy[SET_OF_PARAMETERS].items():
+            # if k != "beta": continue
+            if k == "N": continue
+            print ("- Parameter: "+k)
+            for f in factors:
+                
+                parameters_store_hard_copy[SET_OF_PARAMETERS][k] = f*v
+                print ("    > "+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k]))
+                histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])] = dict ()
+                histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][0] = history[0]
+                for t in range (1, parameters_store_hard_copy["simulation_parameters"]["TIME_MAX"]):
+                    tmp_event = event (t)
+                    event_precedent = histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][t-1] if t>0 else histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][0]
+                
+                    event_past = histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][t-parameters_store_hard_copy[SET_OF_PARAMETERS]["tau"]] if t>parameters_store_hard_copy[SET_OF_PARAMETERS]["tau"] else histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][0]
+                
+                    tmp_event.update_midpoint (parameters_store_hard_copy, event_precedent, event_past, SET_OF_PARAMETERS)
+            
+                    histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][t] = tmp_event
+                    
+                parameters_store_hard_copy[SET_OF_PARAMETERS][k] = parameters_store[SET_OF_PARAMETERS][k]
+
+        from plotting import plot_scan
+        plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS)
