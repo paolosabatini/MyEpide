@@ -47,7 +47,7 @@ def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
     quantities = ['S', 'E', 'I', 'Q', 'R']
     #Scan plots
     plots_collection = dict ()
-    for parameter in parameters_store[SET_OF_PARAMETERS]:
+    for parameter in parameters_store["simulation_parameters"]["SCAN_PARAMETERS"]:
         print (parameter)
         #if parameter != 'beta': continue
         for q in quantities:
@@ -58,7 +58,7 @@ def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
                 plots_collection[parameter+"_ax"].plot ([t for t,e in histories_for_scan[p].items()],
                                                         [getattr(e,q) for t,e in histories_for_scan[p].items()],
                                                         color='k', ls=styles[counter],
-                                                        label=str(p.split('_')[1]))
+                                                        label=str(p.split('_')[1][:4]))
                 
 
                 counter = counter+1

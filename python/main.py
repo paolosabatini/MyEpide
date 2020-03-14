@@ -64,18 +64,17 @@ if __name__ == "__main__":
     # plt.show()
 
 
-    if parameters_store["simulation_parameters"]["SCAN_PARAMETERS"] == "TRUE":
-        factors = [0.1,0.5,1,2,10]
+    if len(parameters_store["simulation_parameters"]["SCAN_PARAMETERS"])!=0 and parameters_store["simulation_parameters"]["SCAN_PARAMETERS"] != "FALSE":
+        factors = [0.1,0.5,1.,2.,10.]
         histories_for_scan = dict()
         print('\n\nStarting scan over parameters to check the effect')
         parameters_store_hard_copy = parameters_store
-        for k,v in parameters_store_hard_copy[SET_OF_PARAMETERS].items():
+        for k in parameters_store["simulation_parameters"]["SCAN_PARAMETERS"]:
             # if k != "beta": continue
             if k == "N": continue
             print ("- Parameter: "+k)
             for f in factors:
-                
-                parameters_store_hard_copy[SET_OF_PARAMETERS][k] = f*v
+                parameters_store_hard_copy[SET_OF_PARAMETERS][k] = f*parameters_store[SET_OF_PARAMETERS][k] if k != 'tau' else int (f*parameters_store[SET_OF_PARAMETERS][k]+1)
                 print ("    > "+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k]))
                 histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])] = dict ()
                 histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][0] = history[0]
