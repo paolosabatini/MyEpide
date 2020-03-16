@@ -94,3 +94,12 @@ if __name__ == "__main__":
 
         from plotting import plot_scan
         plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS)
+
+
+    if parameters_store["simulation_parameters"]["DISPLAY_DATA"]!="FALSE":
+        from utils import read_data
+        dataset = read_data (parameters_store["simulation_parameters"]["DISPLAY_DATA"])
+        from plotting import plot_data
+        plot_data (dataset)
+
+    

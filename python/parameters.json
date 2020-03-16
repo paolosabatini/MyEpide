@@ -33,6 +33,7 @@
 	"TIME_MAX" :  120,
 	"SET_OF_PARAMETERS" : "parameters_alternative",
 	"VERBOSE" : "FALSE",
-	"SCAN_PARAMETERS" : ["d1","d2","mu"]
+	"SCAN_PARAMETERS" : "FALSE",
+	"DISPLAY_DATA" : "Lombardia"
     }
 }

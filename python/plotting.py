@@ -42,10 +42,8 @@ def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
     
 def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
     styles = [(0,(1,10)), 'dotted', '-', 'dashed', (0,(5,10))]
-    
-    
     quantities = ['S', 'E', 'I', 'Q', 'R']
-    #Scan plots
+
     plots_collection = dict ()
     for parameter in parameters_store["simulation_parameters"]["SCAN_PARAMETERS"]:
         
@@ -72,3 +70,25 @@ def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
             print ("..saving plots/Scan_"+q+"_vs_"+parameter+"_"+SET_OF_PARAMETERS+".pdf")
             plots_collection[parameter+"_fig"].savefig("plots/Scan_"+q+"_vs_"+parameter+"_"+SET_OF_PARAMETERS+".pdf",
                                                        bbox_inches='tight')
+
+
+            
+def plot_data (dataset):
+
+    #Summary plot
+    fig, ax = plt.subplots()
+    ax.plot ([t for t in dataset["t"]], dataset["tot"], 'k', label='Total cases')
+    if len (dataset["i"]): 
+        ax.plot (([t for t in dataset["t"]], dataset["i"], 'y--', label='Infected')
+    if len (dataset["d"]): 
+        ax.plot (([t for t in dataset["t"]], dataset["d"], 'r--', label='Deaths')
+    if len (dataset["r"]): 
+        ax.plot (([t for t in dataset["t"]], dataset["r"], 'g--', label='Recovered')
+    ax.set_xlabel ("Time [days]")
+    plt.ylim ( (1, 1.5*max (dataset["tot"])) )
+    #plt.yscale('log')
+    legend = ax.legend(loc='upper left', frameon=False)
+    print ("..saving plots/Data_"+dataset["name"]+".pdf")
+    fig.savefig("plots/Data_"+dataset["name"]+".pdf", bbox_inches='tight')
+
+    
