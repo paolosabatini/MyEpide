@@ -1,13 +1,13 @@
 #/usr/bin/env python3
 latex_decode = {
-    "beta" : "\{beta}",
+    "beta" : "\\beta",
     "gamma" : "\gamma",
     "k" : "k",
     "mu" : "\mu",
     "d1" : "d_{1}",
     "d2" : "d_{2}",
     "delta" : "\delta",
-    "tau" : "\tau",
+    "tau" : "\\tau",
 }
 
 
@@ -48,22 +48,22 @@ def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
     #Scan plots
     plots_collection = dict ()
     for parameter in parameters_store["simulation_parameters"]["SCAN_PARAMETERS"]:
-        print (parameter)
+        
         #if parameter != 'beta': continue
         for q in quantities:
             plots_collection[parameter+"_fig"], plots_collection[parameter+"_ax"] = plt.subplots()
             counter = 0
             for p in [x for x in histories_for_scan if parameter in x]:
-                print (p)
+                
                 plots_collection[parameter+"_ax"].plot ([t for t,e in histories_for_scan[p].items()],
                                                         [getattr(e,q) for t,e in histories_for_scan[p].items()],
                                                         color='k', ls=styles[counter],
-                                                        label=str(p.split('_')[1][:4]))
+                                                        label=str(p.split('_')[1][:5]))
                 
 
                 counter = counter+1
             plt.ylim ( (1, 1.5*parameters_store[SET_OF_PARAMETERS]["N"]) )
-            plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), 'Scan over '+r'$'+latex_decode[parameter]+'$', fontsize=10)
+            plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), 'Scan over '+r'$'+latex_decode[parameter]+'$'+' parameter', fontsize=10)
             plots_collection[parameter+"_ax"].set_xlabel ("Time [days]")
             
                 

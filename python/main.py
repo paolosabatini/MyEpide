@@ -65,16 +65,18 @@ if __name__ == "__main__":
 
 
     if len(parameters_store["simulation_parameters"]["SCAN_PARAMETERS"])!=0 and parameters_store["simulation_parameters"]["SCAN_PARAMETERS"] != "FALSE":
-        factors = [0.1,0.5,1.,2.,10.]
+        import copy
+        factors = [1e-1,0.5,1.0,2.,10.]
+        # factors = [0.5,0.75,1.,1.25,2]
         histories_for_scan = dict()
         print('\n\nStarting scan over parameters to check the effect')
-        parameters_store_hard_copy = parameters_store
+        parameters_store_hard_copy = copy.deepcopy(parameters_store)
         for k in parameters_store["simulation_parameters"]["SCAN_PARAMETERS"]:
             # if k != "beta": continue
             if k == "N": continue
             print ("- Parameter: "+k)
             for f in factors:
-                parameters_store_hard_copy[SET_OF_PARAMETERS][k] = f*parameters_store[SET_OF_PARAMETERS][k] if k != 'tau' else int (f*parameters_store[SET_OF_PARAMETERS][k]+1)
+                parameters_store_hard_copy[SET_OF_PARAMETERS][k] = float(f*parameters_store_hard_copy[SET_OF_PARAMETERS][k]) if k != 'tau' else int (f*parameters_store_hard_copy[SET_OF_PARAMETERS][k]+1)
                 print ("    > "+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k]))
                 histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])] = dict ()
                 histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][0] = history[0]
@@ -88,7 +90,7 @@ if __name__ == "__main__":
             
                     histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][t] = tmp_event
                     
-                parameters_store_hard_copy[SET_OF_PARAMETERS][k] = parameters_store[SET_OF_PARAMETERS][k]
+                parameters_store_hard_copy[SET_OF_PARAMETERS] = copy.deepcopy(parameters_store[SET_OF_PARAMETERS])
 
         from plotting import plot_scan
         plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS)

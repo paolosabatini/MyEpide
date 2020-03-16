@@ -33,6 +33,6 @@
 	"TIME_MAX" :  120,
 	"SET_OF_PARAMETERS" : "parameters_alternative",
 	"VERBOSE" : "FALSE",
-	"SCAN_PARAMETERS" : ["beta"]
+	"SCAN_PARAMETERS" : ["d1","d2","mu"]
     }
 }
