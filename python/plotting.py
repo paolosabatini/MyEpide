@@ -77,17 +77,18 @@ def plot_data (dataset):
 
     #Summary plot
     fig, ax = plt.subplots()
-    ax.plot ([t for t in dataset["t"]], dataset["tot"], 'k', label='Total cases')
+    ax.plot ([t[2:4]+"/"+t[0:2] for t in dataset["t"]], dataset["tot"], 'k', label='Total cases')
     if len (dataset["i"]): 
-        ax.plot (([t for t in dataset["t"]], dataset["i"], 'y--', label='Infected')
+        ax.plot ([t[2:4]+"/"+t[0:2] for t in dataset["t"]], dataset["i"], 'y--', label='Infected')
     if len (dataset["d"]): 
-        ax.plot (([t for t in dataset["t"]], dataset["d"], 'r--', label='Deaths')
+        ax.plot ([t[2:4]+"/"+t[0:2] for t in dataset["t"]], dataset["d"], 'r--', label='Deaths')
     if len (dataset["r"]): 
-        ax.plot (([t for t in dataset["t"]], dataset["r"], 'g--', label='Recovered')
+        ax.plot ([t[2:4]+"/"+t[0:2] for t in dataset["t"]], dataset["r"], 'g--', label='Recovered')
     ax.set_xlabel ("Time [days]")
+    plt.xticks (fontsize=10, rotation=90)
     plt.ylim ( (1, 1.5*max (dataset["tot"])) )
     #plt.yscale('log')
-    legend = ax.legend(loc='upper left', frameon=False)
+    legend = ax.legend(loc='upper left', frameon=False, title='Location: '+dataset['name']+"\nYear: 2020")
     print ("..saving plots/Data_"+dataset["name"]+".pdf")
     fig.savefig("plots/Data_"+dataset["name"]+".pdf", bbox_inches='tight')
 
