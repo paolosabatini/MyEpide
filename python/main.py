@@ -18,18 +18,22 @@ if __name__ == "__main__":
     from model import event
     
     # Initial conditions definition
-    history [0] = event (0)
+    history [0] = event(0)
     history[0].i = parameters_store["initial_conditions"]["i0"]
     history[0].e = parameters_store[SET_OF_PARAMETERS]["k"]*history[0].i
     history[0].s = 1- history[0].e - history[0].i
+    history[0].r = 0
+    history[0].q = 0
+    history[0].tot = 1 - history[0].s - history[0].r - history[0].e
     history[0].I = parameters_store[SET_OF_PARAMETERS]["N"]*history[0].i
     history[0].E = parameters_store[SET_OF_PARAMETERS]["N"]*history[0].e
     history[0].S = parameters_store[SET_OF_PARAMETERS]["N"]*history[0].s
-    history[0].r = 0
-    history[0].q = 0
+    history[0].Q = 0
+    history[0].R = 0
+    history[0].TOT = history[0].tot *  parameters_store[SET_OF_PARAMETERS]["N"]    
 
     if parameters_store["simulation_parameters"]["VERBOSE"] == "TRUE":
-        print ("t "+str(0)+" i "+str( history[0].I)+" e "+str( history[0].E)+" q "+str( history[0].Q)+" r "+str( history[0].R)+" s "+str( history[0].S))
+        print ("t "+history[0].time+" i "+str( history[0].I)+" e "+str( history[0].E)+" q "+str( history[0].Q)+" r "+str( history[0].R)+" s "+str( history[0].S))
     
     
     # Creation of the history
@@ -99,7 +103,7 @@ if __name__ == "__main__":
     if parameters_store["simulation_parameters"]["DISPLAY_DATA"]!="FALSE":
         from utils import read_data
         dataset = read_data (parameters_store["simulation_parameters"]["DISPLAY_DATA"])
-        from plotting import plot_data
+        from plotting import plot_data, plot_data_vs_model
         plot_data (dataset)
-
+        plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS)
     

@@ -12,7 +12,7 @@
       "N": 10000
     },    
     "parameters_alternative" :
-    { "beta" : 0.1,
+    { "beta" : 0.2,
       "k" : 6,
       "gamma": 2e-4,
       "delta": 0.3,
@@ -25,12 +25,13 @@
     },    
     "initial_conditions" :
     {
-        "i0" : 1e-3
+        "i0" : 1e-3,
+        "t0" : 20
     },
 
     "simulation_parameters":
     {
-	"TIME_MAX" :  120,
+	"TIME_MAX" :  60,
 	"SET_OF_PARAMETERS" : "parameters_alternative",
 	"VERBOSE" : "FALSE",
 	"SCAN_PARAMETERS" : "FALSE",
