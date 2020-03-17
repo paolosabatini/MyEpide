@@ -78,7 +78,7 @@ class event:
         self.s = event_precedent.s + ds_dt*abs(self.time-event_precedent.time)
         self.S = self.s * parameters_store[string_to_use]["N"]
 
-        self.tot = 1 - self.s -self.r - self.e
+        self.tot = 1 - self.s - self.e - self.i
         self.TOT = self.tot * parameters_store[string_to_use]["N"]
         
         import math

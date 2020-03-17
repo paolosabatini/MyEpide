@@ -15,16 +15,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
-
+    
     #Summary plot
     fig, ax = plt.subplots()
-    ax.plot ([t for t in history],[e.S for t,e in history.items()], 'k--', label='Susceptible')
-    ax.plot ([t for t in history],[e.E for t,e in history.items()], 'y', label='Exposed')
-    ax.plot ([t for t in history],[e.I for t,e in history.items()], 'r', label='Infected')
-    ax.plot ([t for t in history], [e.Q for t,e in history.items()], 'b', label='Quarantined' )
-    ax.plot ([t for t in history], [e.R for t,e in history.items()], 'g--', label='Recovered')
+    ax.plot ([e.time for t,e in history.items()],[e.S for t,e in history.items()], 'k--', label='Susceptible')
+    ax.plot ([e.time for t,e in history.items()],[e.E for t,e in history.items()], 'y', label='Exposed')
+    ax.plot ([e.time for t,e in history.items()],[e.I for t,e in history.items()], 'r', label='Infected')
+    ax.plot ([e.time for t,e in history.items()], [e.Q for t,e in history.items()], 'b', label='Quarantined' )
+    ax.plot ([e.time for t,e in history.items()], [e.R for t,e in history.items()], 'g--', label='Recovered')
     ax.set_xlabel ("Time [days]")
     plt.ylim ( (1, 1.5*parameters_store[SET_OF_PARAMETERS]["N"]) )
+    if parameters_store[SET_OF_PARAMETERS]["N"] > 1e4:
+        plt.ylim ( (1, 1.5*max ([e.R for t,e in history.items()])) )
     #plt.yscale('log')
     legend = ax.legend(loc='upper right', frameon=False)
     font_size = 10
@@ -32,10 +34,12 @@ def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.90)*(plt.ylim()[1]-plt.ylim()[0]), r'$k='+str(parameters_store[SET_OF_PARAMETERS]["k"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\gamma='+str(parameters_store[SET_OF_PARAMETERS]["gamma"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\mu='+str(parameters_store[SET_OF_PARAMETERS]["mu"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$i_{0}='+str(parameters_store["initial_conditions"]["i0"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$d_{1}='+str(parameters_store[SET_OF_PARAMETERS]["d1"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.90)*(plt.ylim()[1]-plt.ylim()[0]), r'$d_{2}='+str(parameters_store[SET_OF_PARAMETERS]["d2"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\delta='+str(parameters_store[SET_OF_PARAMETERS]["delta"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\tau='+str(parameters_store[SET_OF_PARAMETERS]["tau"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$t_{0}='+str(parameters_store["initial_conditions"]["t0"])+'$', fontsize=font_size)
     print ("..saving plots/Summary_"+SET_OF_PARAMETERS+".pdf")
     fig.savefig("plots/Summary_"+SET_OF_PARAMETERS+".pdf", bbox_inches='tight')
 
@@ -53,7 +57,7 @@ def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
             counter = 0
             for p in [x for x in histories_for_scan if parameter in x]:
                 
-                plots_collection[parameter+"_ax"].plot ([t for t,e in histories_for_scan[p].items()],
+                plots_collection[parameter+"_ax"].plot ([e.time for t,e in histories_for_scan[p].items()],
                                                         [getattr(e,q) for t,e in histories_for_scan[p].items()],
                                                         color='k', ls=styles[counter],
                                                         label=str(p.split('_')[1][:5]))
@@ -97,9 +101,13 @@ def plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS):
     
     #Total infected people plot vs data
     fig, ax = plt.subplots()
-    ax.plot ([t for t in history], [e.TOT for t,e in history.items()], 'g--', label='Model')
+    ax.plot ([e.time for t,e in history.items()], [e.TOT for t,e in history.items()], 'g--', label='Model')
+    ax.plot (range (0,len (dataset["t"])), dataset["tot"], 'ko', label=dataset["name"]+" (2020)")
     ax.set_xlabel ("Time [days]")
-    plt.ylim ( (1, 1.5*parameters_store[SET_OF_PARAMETERS]["N"]) )
+    ax.set_ylabel ("Total cases [Q + D + R]")
+    plt.ylim ( (1, 1.5*max( [e.TOT for t,e in history.items() if e.time<len(dataset["t"])] )) )
+    #plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*1.25) )
+    plt.xlim ( (0, len (dataset["t"])*1.25) )
     #plt.yscale('log')
     legend = ax.legend(loc='upper right', frameon=False)
     font_size = 10
@@ -107,9 +115,11 @@ def plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS):
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.90)*(plt.ylim()[1]-plt.ylim()[0]), r'$k='+str(parameters_store[SET_OF_PARAMETERS]["k"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\gamma='+str(parameters_store[SET_OF_PARAMETERS]["gamma"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\mu='+str(parameters_store[SET_OF_PARAMETERS]["mu"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$i_{0}='+str(parameters_store["initial_conditions"]["i0"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$d_{1}='+str(parameters_store[SET_OF_PARAMETERS]["d1"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.90)*(plt.ylim()[1]-plt.ylim()[0]), r'$d_{2}='+str(parameters_store[SET_OF_PARAMETERS]["d2"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\delta='+str(parameters_store[SET_OF_PARAMETERS]["delta"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\tau='+str(parameters_store[SET_OF_PARAMETERS]["tau"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$t_{0}='+str(parameters_store["initial_conditions"]["t0"])+'$', fontsize=font_size)
     print ("..saving plots/DataVsModel_"+SET_OF_PARAMETERS+".pdf")
     fig.savefig("plots/DataVsModel_"+SET_OF_PARAMETERS+".pdf", bbox_inches='tight')

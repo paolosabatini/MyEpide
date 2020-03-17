@@ -24,7 +24,7 @@ if __name__ == "__main__":
     history[0].s = 1- history[0].e - history[0].i
     history[0].r = 0
     history[0].q = 0
-    history[0].tot = 1 - history[0].s - history[0].r - history[0].e
+    history[0].tot = 1 - history[0].s - history[0].e - history[0].i 
     history[0].I = parameters_store[SET_OF_PARAMETERS]["N"]*history[0].i
     history[0].E = parameters_store[SET_OF_PARAMETERS]["N"]*history[0].e
     history[0].S = parameters_store[SET_OF_PARAMETERS]["N"]*history[0].s
@@ -58,6 +58,10 @@ if __name__ == "__main__":
         
         history[t] = tmp_event
 
+    # Shifting the time by t0
+    for t,e in dict(history).items():
+        e.time = e.time-parameters_store["initial_conditions"]["t0"]
+        
     from plotting import plot_summary
     plot_summary (history, parameters_store, SET_OF_PARAMETERS)
 
