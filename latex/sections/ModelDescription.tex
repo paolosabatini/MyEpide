@@ -1,0 +1,34 @@
+\section{Description of the model}
+\label{sec:model}
+
+In the following subsection the mathematical implant is shown, followed by a discussion of the obtained results compared to literature. Finally, the effects of the parameters are understood and presented.
+
+\subsection{Mathematical background}
+The notation and the model description has been already presented in \cite{MingLiu}, here a brief overview, necessary to understand the document, is given. The model framework is SEIQRS: the population of $N$ individuals are separated into these five classes. Quantities with capital letters (such as $S$, $E$\dots) indicate the real number of individuals belonging to the given class, whether quantities given wih small letters (such as $s$, $e$\dots) correspond to fractions (i.e. $s = S/N$). \\
+
+The suscpetible $S$ class correspond to all people who can be potentially infected. In time, they decrease by the number of people getting exposed (thus in touch with an infected individual), and increased by the number of recovered people not developing immunity after being infected. The time variation of $\dot{s} = \frac{ds}{dt}$ is then:
+\begin{equation}
+\dot{s} (t)= -\beta\braket{k}s(t)i(t)+\gamma{r(t)} 
+\end{equation} 
+The exposed $E$ people are individuals got in touch with an infected. An exposed person, after $\tau$ days, they turn to infected. Then the equation for $\dot{e}$:
+\begin{equation}
+\dot{e} (t)= \beta\braket{k}s(t)i(t) - \beta\braket{k}s(t-\tau)i(t-\tau) 
+\end{equation} 
+Infected people $I$ decrease by the number of deaths and quarantined people, giving the equation for $\dot{i}$ :
+\begin{equation}
+\dot{i} (t)= \beta\braket{k}s(t-\tau)i(t-\tau) - d_1i(t) - \delta {i(t)}
+\end{equation} 
+Quarantined people $Q$ may die or recover, therefore $\dot{q}$ follows the equation:
+\begin{equation}
+\dot{q} = \delta{i(t)} - d_2{i(t)} - \mu{i(t)}
+\end{equation}
+Finally, recovered people may actually turn back in susceptible, then the equation for $\dot{r}$:
+\begin{equation}
+\dot{r} = \mu{i(t)}-\gamma{r(t)}
+\end{equation}
+
+The small-world assumption makes all individuals interact with each other, and the numbers of interactions per day is measured by the $\braket{k}$ parameter. The initial conditions state $i(0) = i_0 \ll 1$, $e(0) = e_0 = \braket{k}i_0$ and $s(0) = s_0 = 1-i_0-e_0$. The coupled equations are solved with a second-order Runge-Kutta Method. No substantial discrepancy has been observed by using Euler method.
+
+
+\subsection{Comparison with literature}
+The results obtained are cross-checked with the literature \cite{MingLiu}.

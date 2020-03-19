@@ -1,17 +1,27 @@
 \documentclass{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{titlesec}
+\usepackage{braket}
 \usepackage[margin=1in]{geometry}
 
+%%% 
+% Define new style of sections
+%%%
+\titleformat*{\section}{\LARGE\bfseries}
+\titleformat*{\subsection}{\Large\bfseries}
+\titleformat*{\subsubsection}{\large\bfseries}
+\titleformat*{\paragraph}{\large\bfseries}
+\titleformat*{\subparagraph}{\large\bfseries}
 %%%
 % Title page
 %%%
 \title{
 \begin{flushleft}
-\rule{16cm}{1pt}\\
-  \textsc{\textbf{Elementary study on epidemy spreading adapted to the covid-19 virus example 	}}\\[2mm]
+\rule{\textwidth}{1pt}\\
+  \textsc{\textbf{Elementary study of outbreak evolution adapted to the covid-19 virus example 	}}\\[2mm]
 \textsc{\large Paolo Sabatini}\\
-\rule{16cm}{1pt}
+\rule{\textwidth}{1pt}
   \end{flushleft}
 }
 %\author{
@@ -30,8 +40,23 @@
 
 
 \begin{abstract}
-Short introduction to subject of the paper \ldots 
+This document collects a brief study of modeling an outbreak. The model framework is Susceptible-Exposed-Infected-Quarantined-Recovered-Susceptible (SEIQRS), present already in litealready in past publicationsrature. Here the model is independently re-implemented, studied and analysed. The effects of the model parameters are checked. The model is tested against the national- and regional-wide Italian COVID-19 outbreak data. A fit against the data is performed to measure the model parameters and to give predictions of the expected outbreak behaviour.
 \end{abstract}
+\vspace{2cm}
+\tableofcontents
+
+\newpage
+
+\input{sections/Introduction}
+\input{sections/ModelDescription}
+
+
+\begin{thebibliography}{9}
+\bibitem{MingLiu} 
+Zhiwei Gao, Ming Liu and Yihong Xiao, 
+\textit{Modeling and Analysis of Epidemic Diffusion within Small-World Network},
+Journal of Applied Mathematics (2012) 841531.
+\end{thebibliography}
 
 
 \end{document}

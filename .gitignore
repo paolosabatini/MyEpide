@@ -5,3 +5,5 @@ python/plots
 *.aux
 *.log
 doc/
+*.pdf
+*.toc
