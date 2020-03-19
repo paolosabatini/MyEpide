@@ -36,21 +36,21 @@
       "N": 10e6
     },    
     "parameters_Lombardia_less_impacting" :
-    { "beta" : 0.2,
-      "k" : 30,
+    { "beta" : 0.13,
+      "k" : 6,
       "gamma": 2e-4,
-      "delta": 0.6,
+      "delta": 0.4,
       "mu" : 0.5,
       "d" : 2e-2,
       "d1": 2e-2,
       "d2": 2e-2,
-      "tau": 10,
+      "tau": 3,
       "N": 10e6
     },    
     "initial_conditions" :
     {
-        "i0" : 0.5e-6,
-        "t0" : 10
+        "i0" : 1.7e-5,
+        "t0" : 5
     },
 
     "simulation_parameters":

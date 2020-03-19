@@ -27,7 +27,7 @@ def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
     plt.ylim ( (1, 1.5*parameters_store[SET_OF_PARAMETERS]["N"]) )
     if parameters_store[SET_OF_PARAMETERS]["N"] > 1e4:
         plt.ylim ( (1, 1.5*max ([e.R for t,e in history.items()])) )
-    #plt.yscale('log')
+    # plt.yscale('log')
     legend = ax.legend(loc='upper right', frameon=False)
     font_size = 10
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$\beta='+str(parameters_store[SET_OF_PARAMETERS]["beta"])+'$', fontsize=font_size)
@@ -105,10 +105,11 @@ def plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS):
     ax.plot (range (0,len (dataset["t"])), dataset["tot"], 'ko', label=dataset["name"]+" (2020)")
     ax.set_xlabel ("Time [days]")
     ax.set_ylabel ("Total cases [Q + D + R]")
-    plt.ylim ( (1, 1.5*max( [e.TOT for t,e in history.items() if e.time<len(dataset["t"])] )) )
-    #plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*1.25) )
-    plt.xlim ( (0, len (dataset["t"])*1.25) )
-    #plt.yscale('log')
+    # plt.ylim ( (1, 10*max( [e.TOT for t,e in history.items() if e.time<len(dataset["t"])] )) )
+    plt.ylim ( (1, 1.5*max(dataset["tot"])) )
+    plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*1.25) )
+    # plt.xlim ( (0, len (dataset["t"])*1.25) )
+    # plt.yscale('log')
     legend = ax.legend(loc='upper right', frameon=False)
     font_size = 10
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$\beta='+str(parameters_store[SET_OF_PARAMETERS]["beta"])+'$', fontsize=font_size)
