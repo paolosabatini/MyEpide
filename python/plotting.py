@@ -47,6 +47,11 @@ def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
 def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
     styles = [(0,(1,10)), 'dotted', '-', 'dashed', (0,(5,10))]
     quantities = ['S', 'E', 'I', 'Q', 'R']
+    quantities_labels = {'S': "Susceptible population",
+                         'E': "Exposed population",
+                         'I': "Infected population",
+                         'Q': "Quarantined population",
+                         'R': "Recovered population"}
 
     plots_collection = dict ()
     for parameter in parameters_store["simulation_parameters"]["SCAN_PARAMETERS"]:
@@ -55,6 +60,7 @@ def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
         for q in quantities:
             plots_collection[parameter+"_fig"], plots_collection[parameter+"_ax"] = plt.subplots()
             counter = 0
+            maximum = 0
             for p in [x for x in histories_for_scan if parameter in x]:
                 
                 plots_collection[parameter+"_ax"].plot ([e.time for t,e in histories_for_scan[p].items()],
@@ -62,11 +68,14 @@ def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
                                                         color='k', ls=styles[counter],
                                                         label=str(p.split('_')[1][:5]))
                 
-
+                if maximum < max ( [getattr(e,q) for t,e in histories_for_scan[p].items()] ):
+                    maximum =  max ( [getattr(e,q) for t,e in histories_for_scan[p].items()] ) 
                 counter = counter+1
-            plt.ylim ( (1, 1.5*parameters_store[SET_OF_PARAMETERS]["N"]) )
+            # plt.ylim ( (1, 1.5*parameters_store[SET_OF_PARAMETERS]["N"]) )
+            plt.ylim ( (1, 1.5*maximum) )
             plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), 'Scan over '+r'$'+latex_decode[parameter]+'$'+' parameter', fontsize=10)
             plots_collection[parameter+"_ax"].set_xlabel ("Time [days]")
+            plots_collection[parameter+"_ax"].set_ylabel (quantities_labels[q])
             
                 
             plots_collection[parameter+"_leg"] = plots_collection[parameter+"_ax"].legend(loc='upper right',

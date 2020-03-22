@@ -36,7 +36,7 @@
       "N": 10e6
     },    
     "parameters_Lombardia_less_impacting" :
-    { "beta" : 0.13,
+    { "beta" : 0.12,
       "k" : 6,
       "gamma": 2e-4,
       "delta": 0.4,
@@ -58,7 +58,7 @@
 	"TIME_MAX" :  120,
 	"SET_OF_PARAMETERS" : "parameters_alternative",
 	"VERBOSE" : "FALSE",
-	"SCAN_PARAMETERS" : "FALSE",
+	"SCAN_PARAMETERS" : ["d1","tau"],
 	"DISPLAY_DATA" : "FALSE"
     }
 }
