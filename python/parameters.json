@@ -49,16 +49,16 @@
     },    
     "initial_conditions" :
     {
-        "i0" : 1.7e-5,
-        "t0" : 5
+        "i0" : 1e-3,
+        "t0" : 0
     },
 
     "simulation_parameters":
     {
 	"TIME_MAX" :  120,
-	"SET_OF_PARAMETERS" : "parameters_Lombardia_less_impacting",
+	"SET_OF_PARAMETERS" : "parameters_alternative",
 	"VERBOSE" : "FALSE",
 	"SCAN_PARAMETERS" : "FALSE",
-	"DISPLAY_DATA" : "Lombardia"
+	"DISPLAY_DATA" : "FALSE"
     }
 }
