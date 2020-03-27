@@ -36,29 +36,29 @@
       "N": 10e6
     },    
     "parameters_Lombardia_less_impacting" :
-    { "beta" : 0.12,
+    { "beta" : 0.21,
       "k" : 6,
-      "gamma": 2e-4,
+      "gamma": 1e-5,
       "delta": 0.4,
       "mu" : 0.5,
       "d" : 2e-2,
       "d1": 2e-2,
       "d2": 2e-2,
-      "tau": 3,
+      "tau": 5,
       "N": 10e6
     },    
     "initial_conditions" :
     {
-        "i0" : 1e-3,
-        "t0" : 0
+        "i0" : 1e-5,
+        "t0" : 3
     },
 
     "simulation_parameters":
     {
 	"TIME_MAX" :  120,
-	"SET_OF_PARAMETERS" : "parameters_alternative",
+	"SET_OF_PARAMETERS" : "parameters_Lombardia_less_impacting",
 	"VERBOSE" : "FALSE",
-	"SCAN_PARAMETERS" : ["d1","tau"],
-	"DISPLAY_DATA" : "FALSE"
+	"SCAN_PARAMETERS" : "FALSE",
+	"DISPLAY_DATA" : "Lombardia"
     }
 }
