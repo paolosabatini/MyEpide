@@ -23,6 +23,7 @@ def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
     ax.plot ([e.time for t,e in history.items()],[e.I for t,e in history.items()], 'r', label='Infected')
     ax.plot ([e.time for t,e in history.items()], [e.Q for t,e in history.items()], 'b', label='Quarantined' )
     ax.plot ([e.time for t,e in history.items()], [e.R for t,e in history.items()], 'g--', label='Recovered')
+    ax.plot ([e.time for t,e in history.items()], [e.D for t,e in history.items()], 'm--', label='Deaths')
     ax.set_xlabel ("Time [days]")
     plt.ylim ( (1, 1.5*parameters_store[SET_OF_PARAMETERS]["N"]) )
     if parameters_store[SET_OF_PARAMETERS]["N"] > 1e3:
@@ -115,10 +116,12 @@ def plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS):
     ax.set_xlabel ("Time [days]")
     ax.set_ylabel ("Total cases [Q + D + R]")
     # plt.ylim ( (1, 10*max( [e.TOT for t,e in history.items() if e.time<len(dataset["t"])] )) )
+    #plt.ylim ( (1, 10*max(dataset["tot"])) )
+    #plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*1.25) )
+    #plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*2) )
+    plt.xlim ( (0 , len (dataset["t"])*1.25) )
     plt.ylim ( (1, 1.5*max(dataset["tot"])) )
-    plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*1.25) )
-    #plt.xlim ( (0, len (dataset["t"])*1.25) )
-    # plt.yscale('log')
+    #plt.yscale('log')
     legend = ax.legend(loc='upper right', frameon=False)
     font_size = 10
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$\beta='+str(parameters_store[SET_OF_PARAMETERS]["beta"])+'$', fontsize=font_size)
@@ -133,3 +136,22 @@ def plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS):
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$t_{0}='+str(parameters_store["initial_conditions"]["t0"])+'$', fontsize=font_size)
     print ("..saving plots/DataVsModel_"+SET_OF_PARAMETERS+".pdf")
     fig.savefig("plots/DataVsModel_"+SET_OF_PARAMETERS+".pdf", bbox_inches='tight')
+
+def plot_scheduling (history, parameters_store, SET_OF_PARAMETERS):
+    #Plot for scheduling
+    fig, ax = plt.subplots()
+    ax.plot ([e.time for t,e in history.items()],[e.delta for t,e in history.items()], 'k')
+    ax.set_xlabel ("Time [days]")
+    ax.set_ylabel (r'$\delta$')
+    ax.tick_params(axis='y')
+    
+    ax2 = ax.twinx()  # instantiate a second axes that shares the same x-axis
+
+    ax2.set_ylabel(r'k', color='tab:blue')  # we already handled the x-label with ax1
+    ax2.plot([e.time for t,e in history.items()],[e.k for t,e in history.items()], 'b--')
+    ax2.tick_params(axis='y', labelcolor='tab:blue')
+
+    print ("..saving plots/Scheduling.pdf")
+    fig.savefig("plots/Scheduling.pdf", bbox_inches='tight')
+
+    

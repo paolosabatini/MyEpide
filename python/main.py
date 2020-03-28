@@ -18,22 +18,24 @@ if __name__ == "__main__":
     from model import event
     
     # Initial conditions definition
-    history [0] = event(0)
+    history [0] = event(0, parameters_store, SET_OF_PARAMETERS)
     history[0].i = parameters_store["initial_conditions"]["i0"]
-    history[0].e = parameters_store[SET_OF_PARAMETERS]["k"]*history[0].i
+    history[0].e = history[0].k*history[0].i
     history[0].s = 1- history[0].e - history[0].i
     history[0].r = 0
     history[0].q = 0
+    history[0].d = 0
     history[0].tot = 1 - history[0].s - history[0].e - history[0].i 
     history[0].I = parameters_store[SET_OF_PARAMETERS]["N"]*history[0].i
     history[0].E = parameters_store[SET_OF_PARAMETERS]["N"]*history[0].e
     history[0].S = parameters_store[SET_OF_PARAMETERS]["N"]*history[0].s
     history[0].Q = 0
     history[0].R = 0
+    history[0].D = 0
     history[0].TOT = history[0].tot *  parameters_store[SET_OF_PARAMETERS]["N"]    
 
     if parameters_store["simulation_parameters"]["VERBOSE"] == "TRUE":
-        print ("t "+history[0].time+" i "+str( history[0].I)+" e "+str( history[0].E)+" q "+str( history[0].Q)+" r "+str( history[0].R)+" s "+str( history[0].S))
+        print ("t "+str(history[0].time)+" i "+str( history[0].I)+" e "+str( history[0].E)+" q "+str( history[0].Q)+" r "+str( history[0].R)+" s "+str( history[0].S)+" d "+str( history[0].D))
     
     
     # Creation of the history
@@ -41,7 +43,7 @@ if __name__ == "__main__":
     for t in range (1, parameters_store["simulation_parameters"]["TIME_MAX"]):
         if (int (t)%int (parameters_store["simulation_parameters"]["TIME_MAX"]/10)==0): print ("-> time "+str(t))
         if parameters_store["simulation_parameters"]["VERBOSE"] == "TRUE": print ("TIME "+str(t))
-        tmp_event = event (t)
+        tmp_event = event (t, parameters_store, SET_OF_PARAMETERS)
         event_precedent = history[t-1] if t>0 else history[0]
         
         event_past = history[t-parameters_store[SET_OF_PARAMETERS]["tau"]] if t>parameters_store[SET_OF_PARAMETERS]["tau"] else history[0]
@@ -89,7 +91,7 @@ if __name__ == "__main__":
                 histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])] = dict ()
                 histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][0] = history[0]
                 for t in range (1, parameters_store_hard_copy["simulation_parameters"]["TIME_MAX"]):
-                    tmp_event = event (t)
+                    tmp_event = event (t, parameters_store, SET_OF_PARAMETERS)
                     event_precedent = histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][t-1] if t>0 else histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][0]
                 
                     event_past = histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][t-parameters_store_hard_copy[SET_OF_PARAMETERS]["tau"]] if t>parameters_store_hard_copy[SET_OF_PARAMETERS]["tau"] else histories_for_scan [k+"_"+str(parameters_store_hard_copy[SET_OF_PARAMETERS][k])][0]
@@ -111,3 +113,6 @@ if __name__ == "__main__":
         plot_data (dataset)
         plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS)
     
+    if parameters_store["simulation_parameters"]["SCHEDULING"] != "FALSE":
+        from plotting import plot_scheduling
+        plot_scheduling (history, parameters_store, SET_OF_PARAMETERS)
