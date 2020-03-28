@@ -86,11 +86,11 @@ class event:
         event_half_point.update_r_euler (parameters_store, event_precedent, string_to_use)
         event_half_point.update_test_euler (parameters_store, event_precedent, string_to_use)
 
-        de_dt = parameters_store[string_to_use]["beta"]*self.k*event_half_point.s*event_half_point.i-parameters_store[string_to_use]["beta"]*self.k*event_past.s*event_past.i
+        de_dt = parameters_store[string_to_use]["beta"]*self.k*event_half_point.s*event_half_point.i-parameters_store[string_to_use]["beta"]*event_past.k*event_past.s*event_past.i
         self.e = event_precedent.e + de_dt*abs(self.time-event_precedent.time)
         self.E = self.e * parameters_store[string_to_use]["N"]
 
-        di_dt = parameters_store[string_to_use]["beta"]*self.k*event_past.s*event_past.i-parameters_store[string_to_use]["d1"]*event_half_point.i-self.delta*event_half_point.i
+        di_dt = parameters_store[string_to_use]["beta"]*event_past.k*event_past.s*event_past.i-parameters_store[string_to_use]["d1"]*event_half_point.i-self.delta*event_half_point.i
         self.i = event_precedent.i + di_dt*abs(self.time-event_precedent.time)
         self.I = self.i * parameters_store[string_to_use]["N"]
         
