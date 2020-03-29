@@ -67,11 +67,21 @@ if __name__ == "__main__":
     from plotting import plot_summary
     plot_summary (history, parameters_store, SET_OF_PARAMETERS)
 
+    
     # #Test plot
     # test_fig, test_ax = plt.subplots()
     # test_ax.plot ([t for t in history],[e.test for t,e in history.items()], 'black')
     # test_ax.set_xlabel ("Time [days]")
     # plt.show()
+
+    if parameters_store["simulation_parameters"]["SAVE_HISTOGRAMS"] != "FALSE":
+        from utils import save_histo
+        print( '..storing h_nominal in '+str("files/"+str(SET_OF_PARAMETERS).replace ('parameters_','')+'_histos.dat'))
+        save_histo ([e.time for t,e in history.items ()],
+                    [e.TOT for t,e in history.items ()],
+                    "h_nominal",
+                    "files/"+str(SET_OF_PARAMETERS).replace ('parameters_','')+'_histos.dat'
+        )
 
 
     if len(parameters_store["simulation_parameters"]["SCAN_PARAMETERS"])!=0 and parameters_store["simulation_parameters"]["SCAN_PARAMETERS"] != "FALSE":
@@ -105,13 +115,33 @@ if __name__ == "__main__":
         from plotting import plot_scan
         plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS)
 
+        if parameters_store["simulation_parameters"]["SAVE_HISTOGRAMS"] != "FALSE":
+            from utils import save_histo
+            for key in histories_for_scan:
+                h_name = 'h_'+key
+                print( '..storing '+h_name+' in '+str("files/"+str(SET_OF_PARAMETERS).replace ('parameters_','')+'_histos.dat'))
+                save_histo ([e.time for t,e in histories_for_scan[key].items ()],
+                            [e.TOT for t,e in histories_for_scan[key].items ()],
+                            h_name,
+                            "files/"+str(SET_OF_PARAMETERS).replace ('parameters_','')+'_histos.dat'
+                )
+
+
 
     if parameters_store["simulation_parameters"]["DISPLAY_DATA"]!="FALSE":
-        from utils import read_data
+        from utils import read_data, save_histo
         dataset = read_data (parameters_store["simulation_parameters"]["DISPLAY_DATA"])
         from plotting import plot_data, plot_data_vs_model
         plot_data (dataset)
         plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS)
+        
+        if parameters_store["simulation_parameters"]["SAVE_HISTOGRAMS"] != "FALSE":
+            print( '..storing h_data '+str("files/"+str(SET_OF_PARAMETERS).replace ('parameters_','')+'_histos.dat'))
+            save_histo (dataset["t"],
+                        dataset["tot"],
+                    'h_data',
+                    "files/"+str(SET_OF_PARAMETERS).replace ('parameters_','')+'_histos.dat'
+            )
     
     if parameters_store["simulation_parameters"]["SCHEDULING"] != "FALSE":
         from plotting import plot_scheduling

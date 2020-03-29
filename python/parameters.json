@@ -98,8 +98,9 @@
 	"TIME_MAX" :  60,
 	"SET_OF_PARAMETERS" : "parameters_Lombardia_scheduling_definitive",
 	"VERBOSE" : "FALSE",
-	"SCAN_PARAMETERS" : "FALSE",
+	"SCAN_PARAMETERS" : [ "mu", "gamma","delta"],
 	"DISPLAY_DATA" : "Lombardia",
-	"SCHEDULING" : "TRUE"
+	"SCHEDULING" : "TRUE",
+	"SAVE_HISTOGRAMS" : "TRUE"
     }
 }

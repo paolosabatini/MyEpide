@@ -34,3 +34,31 @@ def read_data (filename):
             
             
     return dataset
+
+
+def save_histo (t, y, histo_name, filename):
+    # want to save as day-per-day increment on txt file
+    import os
+    opt = 'a' if os.path.exists (filename) else 'w+'
+    with open (filename,opt) as f:
+        f.write ("\n##############\n# "+histo_name+" # \n##############\n")
+        f.write ("\n#Time \ttotal case\n")
+        previous = 0
+        for time, num in zip (t,y):
+            delta_num = num - previous
+            f.write (str (time)+"\t"+str(delta_num)+'\n')
+            previous = num
+        f.write ("END\n")
+    f.close()
+        
+        # import ROOT
+    # h = ROOT.TH1F (histo_name, histo_name, abs (max (t)-min (t)+1), min (t)-0.5, max (t)+0.5 )
+    # for time, num in zip (t,y):
+    #     bin_index = h.GetXaxis().FindBin (time)
+    #     delta_num = num if time == min(t) else num - h.GetBinContent (bin_index-1)
+    #     h.SetBinContent (bin_index,delta_num)
+    # f = ROOT.TFile.Open (filename,"UPDATE")
+    # f.cd()
+    # h.Write()
+    # h.Close()
+    
