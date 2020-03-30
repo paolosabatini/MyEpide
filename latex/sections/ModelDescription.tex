@@ -27,7 +27,7 @@ Quarantined people $Q$ may die or recover, therefore $\dot{q}$ follows the equat
 \end{equation}
 Finally, recovered people may actually turn back in susceptible, then the equation for $\dot{r}$:
 \begin{equation}
-\dot{r} = \mu{i(t)}-\gamma{r(t)}
+\dot{r} = \mu{q(t)}-\gamma{r(t)}
 \end{equation}
 
 The small-world assumption makes all individuals interact with each other, and the numbers of interactions per day is measured by the $\braket{k}$ parameter. The initial conditions state $i(0) = i_0 \ll 1$, $e(0) = e_0 = \braket{k}i_0$ and $s(0) = s_0 = 1-i_0-e_0$. The coupled equations are solved with a second-order Runge-Kutta Method. No substantial discrepancy has been observed by using Euler method.

@@ -41,6 +41,8 @@ def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\delta='+str(parameters_store[SET_OF_PARAMETERS]["delta"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\tau='+str(parameters_store[SET_OF_PARAMETERS]["tau"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$t_{0}='+str(parameters_store["initial_conditions"]["t0"])+'$', fontsize=font_size)
+    if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] != "FALSE":
+        plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.70)*(plt.ylim()[1]-plt.ylim()[0]), 'k scheduled, '+r'$\delta$'+' corrected', fontsize=font_size)
     print ("..saving plots/Summary_"+SET_OF_PARAMETERS+".pdf")
     fig.savefig("plots/Summary_"+SET_OF_PARAMETERS+".pdf", bbox_inches='tight')
 
@@ -116,11 +118,10 @@ def plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS):
     ax.set_xlabel ("Time [days]")
     ax.set_ylabel ("Total cases [Q + D + R]")
     #plt.ylim ( (1, 10*max( [e.TOT for t,e in history.items() if e.time<len(dataset["t"])] )) )
-    plt.ylim ( (1, 10*max(dataset["tot"])) )
-    plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*1.25) )
+    #plt.ylim ( (1, 10*max(dataset["tot"])) )
+    #plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*1.25) )
     
-    #plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*2) )
-    #plt.xlim ( (0 , len (dataset["t"])*1.25) )
+    plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*2) )
     plt.ylim ( (1, 1.5*max(dataset["tot"])) )
     #plt.yscale('log')
     legend = ax.legend(loc='upper right', frameon=False)
@@ -135,6 +136,8 @@ def plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS):
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\delta='+str(parameters_store[SET_OF_PARAMETERS]["delta"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\tau='+str(parameters_store[SET_OF_PARAMETERS]["tau"])+'$', fontsize=font_size)
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$t_{0}='+str(parameters_store["initial_conditions"]["t0"])+'$', fontsize=font_size)
+    if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] != "FALSE":
+        plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.70)*(plt.ylim()[1]-plt.ylim()[0]), 'k scheduled, '+r'$\delta$'+' corrected', fontsize=font_size)
     print ("..saving plots/DataVsModel_"+SET_OF_PARAMETERS+".pdf")
     fig.savefig("plots/DataVsModel_"+SET_OF_PARAMETERS+".pdf", bbox_inches='tight')
 

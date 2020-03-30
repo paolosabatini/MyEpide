@@ -1,22 +1,32 @@
 delta_t = 1
+tampons_correction = [0.9872441740531028, 1.5171133320108583, 1.200677130514623, 0.9520421565738633, 0.7960764843992927, 0.8210975843013235, 1.1688082397325879, 0.6592759007507154, 0.9231203025048135, 1.1625028227425118, 1.4169521485219272, 0.6187151142305568, 0.9782065727382999, 1.555073813272046, 1.4405145501154475, 1.1526374755485862, 1.0557577174831618, 1.2841144636079982, 0.9670013115211192, 0.7204625618730867, 1.0386010857080965, 0.9713526028540029, 1.2486424227988266, 1.2572080115665005, 1.111021152481559, 0.6978343960679942, 0.8166094370647083, 0.9721837493206806, 1.2089306521422052, 1.0196431327189224, 1.0258230000706914, 0.7609268948346639]
 min_t = 15
 max_t = 25
 
-def schedule_delta (event_current, parameters_store,string_to_use):
-    # no scheduling of delta
-    delta_max = parameters_store[string_to_use]["delta"]
-    return delta_max
+
+
+def correct_delta_with_tampons (event_current, parameters_store,string_to_use):
+    delta = parameters_store[string_to_use]["delta"]
     t0 = parameters_store["initial_conditions"]["t0"]
-    if parameters_store["simulation_parameters"]["SCHEDULING"] == "FALSE": return delta_max
-    delta_min = 0.1*delta_max
-    if (event_current.time-t0) < min_t: return delta_min
-    elif (event_current.time-t0) < max_t: return delta_min + abs(delta_max-delta_min)/abs(max_t-min_t)* (event_current.time-min_t)
-    else: return delta_max
+    
+    if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "FALSE": return delta    
+    if (event_current.time-t0) >= len (tampons_correction) : return delta 
+    elif (event_current.time-t0) < 0: return delta
+    else:
+        return delta*tampons_correction[int (event_current.time-t0)]
+    # delta_max = parameters_store[string_to_use]["delta"]
+    # return delta_max
+    # t0 = parameters_store["initial_conditions"]["t0"]
+    # if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "FALSE": return delta_max
+    # delta_min = 0.1*delta_max
+    # if (event_current.time-t0) < min_t: return delta_min
+    # elif (event_current.time-t0) < max_t: return delta_min + abs(delta_max-delta_min)/abs(max_t-min_t)* (event_current.time-min_t)
+    # else: return delta_max
 
 def schedule_k (event_current, parameters_store,string_to_use):
     t0 = parameters_store["initial_conditions"]["t0"]
     k_max = parameters_store[string_to_use]["k"]
-    if parameters_store["simulation_parameters"]["SCHEDULING"] == "FALSE": return k_max
+    if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "FALSE": return k_max
     k_min = 1
     if (event_current.time-t0) < min_t: return k_max
     elif (event_current.time-t0) < max_t: return k_max + (k_min-k_max)/abs(max_t-min_t)* (event_current.time-min_t)
@@ -43,7 +53,7 @@ class event:
     tot = 0
     def __init__ (self, time, parameters_store, string_to_use):
         self.time = time
-        self.delta = schedule_delta (self, parameters_store, string_to_use)
+        self.delta = correct_delta_with_tampons (self, parameters_store, string_to_use)
         self.k = schedule_k (self, parameters_store, string_to_use)
        
     def update_test_euler (self, parameters_store, event, string_to_use):

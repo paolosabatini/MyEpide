@@ -143,6 +143,6 @@ if __name__ == "__main__":
                     "files/"+str(SET_OF_PARAMETERS).replace ('parameters_','')+'_histos.dat'
             )
     
-    if parameters_store["simulation_parameters"]["SCHEDULING"] != "FALSE":
+    if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] != "FALSE":
         from plotting import plot_scheduling
         plot_scheduling (history, parameters_store, SET_OF_PARAMETERS)
