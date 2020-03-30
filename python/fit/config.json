@@ -1,0 +1,55 @@
+
+
+
+{
+    "baseline" : {
+	"file" : "../files/Lombardia_scheduling_corrected_definitive_histos.dat",
+	"rootfile" : "Lombardia_scheduling_corrected_definitive_histos.root",
+
+	"nominal" : "h_nominal",
+	"beta_up" : "h_beta_0.065",
+	"beta_down" : "h_beta_0.039",
+	"k_down" : "h_k_9.0",
+	"k_up" : "h_k_15.0",
+	"gamma_down" : "h_gamma_7.5e-06",
+	"gamma_up" : "h_gamma_1.25e-05",
+	"delta_down" : "h_delta_0.15",
+	"delta_up" : "h_delta_0.25",
+	"mu_down" : "h_mu_0.0225",
+	"mu_up" : "h_mu_0.0375",
+	"d2_down" : "h_d2_0.0225",
+	"d2_up" : "h_d2_0.0375",
+	"tau_down" : "h_tau_4",
+	"tau_up" : "h_tau_7",
+
+	"bin_min": 0,
+	"bin_max": 29,
+	"rebin": 5,
+	"data" : "h_data"
+    },
+
+    "uncorrected" : {
+	"file" : "../files/Lombardia_scheduling_definitive_histos.dat",
+	"rootfile" : "Lombardia_scheduling_definitive_histos.root",
+	"nominal" : "h_nominal",
+	"beta_up" : "h_beta_0.0625",
+	"beta_down" : "h_beta_0.0375",
+	"k_down" : "h_k_9.0",
+	"k_up" : "h_k_15.0",
+	"gamma_down" : "h_gamma_7.5e-06",
+	"gamma_up" : "h_gamma_1.25e-05",
+	"delta_down" : "h_delta_0.15",
+	"delta_up" : "h_delta_0.25",
+	"mu_down" : "h_mu_0.015",
+	"mu_up" : "h_mu_0.025",
+	"d2_down" : "h_d2_0.0225",
+	"d2_up" : "h_d2_0.0375",
+	"tau_down" : "h_tau_4",
+	"tau_up" : "h_tau_7",
+
+	"bin_min": 0,
+	"bin_max": 31,
+	"rebin": 4,
+	"data" : "h_data"
+    }
+}

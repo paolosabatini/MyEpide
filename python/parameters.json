@@ -111,11 +111,11 @@
     "simulation_parameters":
     {
 	"TIME_MAX" : 120,
-	"SET_OF_PARAMETERS" : "parameters_Lombardia_scheduling_corrected_definitive",
+	"SET_OF_PARAMETERS" : "parameters_Lombardia_scheduling_definitive",
 	"VERBOSE" : "FALSE",
 	"SCAN_PARAMETERS" : ["gamma","delta"],
 	"DISPLAY_DATA" : "Lombardia",
-	"IMPROVED_MODEL" : "TRUE",
+	"IMPROVED_MODEL" : "FALSE",
 	"SAVE_HISTOGRAMS" : "TRUE"
     }
 }
