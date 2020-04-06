@@ -2,9 +2,35 @@
 
 
 {
+    "conservative" : {
+	"file" : "../files/Lombardia_scheduling_corrected_definitive_histos.dat",
+	"rootfile" : "conservative.root",
+
+	"nominal" : "h_nominal",
+	"beta_up" : "h_beta_0.026",
+	"beta_down" : "h_beta_0.104",
+	"k_down" : "h_k_6.0",
+	"k_up" : "h_k_24.0",
+	"gamma_down" : "h_gamma_5e-06",
+	"gamma_up" : "h_gamma_2e-05",
+	"delta_down" : "h_delta_0.1",
+	"delta_up" : "h_delta_0.4",
+	"mu_down" : "h_mu_0.015",
+	"mu_up" : "h_mu_0.06",
+	"d2_down" : "h_d2_0.015",
+	"d2_up" : "h_d2_0.06",
+	"tau_down" : "h_tau_3",
+	"tau_up" : "h_tau_11",
+
+	"bin_min": 0,
+	"bin_max": 31,
+	"rebin": 8,
+	"data" : "h_data"
+    },
+    
     "baseline" : {
 	"file" : "../files/Lombardia_scheduling_corrected_definitive_histos.dat",
-	"rootfile" : "Lombardia_scheduling_corrected_definitive_histos.root",
+	"rootfile" : "baseline.root",
 
 	"nominal" : "h_nominal",
 	"beta_up" : "h_beta_0.065",
