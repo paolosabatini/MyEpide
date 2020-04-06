@@ -90,6 +90,10 @@ void PlotHist(std::string filename){
     histos [name+"_symm_down"] -> Draw ("hist same");
     histos [name+"_symm_up"] -> Draw ("hist same");
 
+    histos ["data"]-> SetMarkerStyle(20);
+    histos ["data"]-> SetMarkerSize(1.1);
+    histos ["data"] -> Draw (" e1 x0 same");
+
     TLegend* leg = new TLegend (0.2,0.7,0.6,0.88);
     leg->SetBorderSize(0);
     leg->SetTextSize(0.04);
@@ -122,6 +126,9 @@ void PlotHist(std::string filename){
     histos ["r_"+name+"_symm_up"] = (TH1F*) histos [name+"_symm_up"] -> Clone ( ("r_"+name+"_symm_up").c_str() );
     histos ["r_"+name+"_symm_up"] -> Add (histos ["nominal"], -1);
     histos ["r_"+name+"_symm_up"] -> Divide ( histos ["nominal"] );
+    histos ["r_data"] = (TH1F*) histos ["data"] -> Clone ("r_nominal");
+    histos ["r_data"] -> Add (histos ["nominal"], -1);
+    histos ["r_data"] -> Divide ( histos ["nominal"] );
     histos ["r_nominal"] -> GetYaxis () -> SetRangeUser (-2,2);
     histos ["r_nominal"] -> GetYaxis () -> SetTitle ("Relative difference");
     histos ["r_nominal"] -> GetYaxis () -> SetLabelSize (0.08);
@@ -135,6 +142,8 @@ void PlotHist(std::string filename){
     histos ["r_"+name+"_down"] -> Draw ("hist same");
     histos ["r_"+name+"_symm_up"] -> Draw ("hist same");
     histos ["r_"+name+"_symm_down"] -> Draw ("hist same");
+    histos ["r_data"] -> Draw ("e1 x0 same");
+
     
     canvases ["syst_"+name] -> SaveAs ( (plot_dir+"Syst_"+name+".pdf" ).c_str() );
     
@@ -159,7 +168,7 @@ void PlotHist(std::string filename){
   histos ["data"] -> SetMarkerColor(1);
   histos ["data"] -> SetLineColor(1);
   histos ["data"] -> SetLineWidth(2);
-  histos ["nominal_prefit"] -> GetYaxis() -> SetRangeUser (0,1.2*histos ["nominal_prefit"]->GetBinContent(histos ["nominal_prefit"]->GetXaxis()->GetNbins())+histos ["nominal_prefit"]->GetBinError(histos ["nominal_prefit"]->GetXaxis()->GetNbins()));
+  histos ["nominal_prefit"] -> GetYaxis() -> SetRangeUser (0,1.2*histos ["nominal_prefit"]->GetMaximum()+histos ["nominal_prefit"]->GetBinError(histos ["nominal_prefit"]->GetXaxis()->GetNbins()));
   histos ["nominal_prefit"] -> SetLineColor (kGray+1);
   histos ["nominal_prefit"] -> SetFillColor (kGray+1);
   histos ["nominal_prefit"] -> SetFillStyle (3003);
@@ -187,9 +196,9 @@ void PlotHist(std::string filename){
   histos ["r_nominal_prefit"] = (TH1F*) histos ["nominal_prefit"] -> Clone ("r_nominal_prefit");
   histos ["r_nominal_prefit"] -> Add (histos ["nominal"], -1);
   histos ["r_nominal_prefit"] -> Divide ( histos ["nominal"] );
-  histos ["r_data"] = (TH1F*) histos ["data"] -> Clone ("r_data");
-  histos ["r_data"] -> Add (histos ["nominal"], -1);
-  histos ["r_data"] -> Divide ( histos ["nominal"] );
+  // histos ["r_data"] = (TH1F*) histos ["data"] -> Clone ("r_data");
+  // histos ["r_data"] -> Add (histos ["nominal"], -1);
+  // histos ["r_data"] -> Divide ( histos ["nominal"] );
 
   histos ["r_nominal_prefit"] -> GetYaxis () -> SetRangeUser (-2,2);
   histos ["r_nominal_prefit"] -> GetYaxis () -> SetTitle ("Relative difference");

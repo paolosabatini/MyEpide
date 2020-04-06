@@ -43,10 +43,11 @@ void fitter(std::string filename, std::string label) {
   //
   Measurement meas("ModelNormFactor", "ModelNormFactor");
   meas.SetOutputFilePrefix( ("./results/"+label).c_str() );
+  meas.SetExportOnly( 0 );
   meas.SetPOI( "ModelNormFactor" );
   meas.SetLumi( 1.0 );
   meas.SetLumiRelErr( 0.02 );
-  // meas.AddConstantParam("Lumi");
+  meas.AddConstantParam("Lumi");
   std::cout<<GRN<<"\t Measurement = ModelNormFactor"<<FIN<<std::endl;
   //
   // Channel
@@ -67,31 +68,51 @@ void fitter(std::string filename, std::string label) {
   
   std::map <std::string, HistoSys> systematics;
   for (std::pair <std::string, TH1F*> h : histos ){
-    continue;
-    if (h.first.find ("_up")==std::string::npos) 
+    // std::cout << "         => "<< h.first << std::endl;
+    if (h.first.find ("_up")!=std::string::npos) 
       continue;
-    if (h.first.find ("beta")==std::string::npos) 
+    if (h.first.find ("data")!=std::string::npos) 
       continue;
+    if (h.first.find ("nominal")!=std::string::npos || h.first.find ("prefit")!=std::string::npos) 
+      continue;
+    if (h.first.find ("symm")!=std::string::npos) 
+      continue;
+    // if (h.first.find ("beta")==std::string::npos) 
+    //   continue;
     std::string key = h.first.substr(0,h.first.find ("_"));
     
     systematics [key] = HistoSys(key);
-    // std::cout << GRN << "\t Systematics = " << key <<" to model" << FIN << std::endl;
+    //std::cout << GRN << "\t Systematics = " << key <<" to model" << FIN << std::endl;
     std::cout << GRN << "\t  HistoSys: " << key << FIN <<std::endl;
     systematics [key].SetInputFileHigh(filename);
     systematics [key].SetInputFileLow (filename);
     systematics [key].SetHistoNameHigh( "h_"+key+"_symm_up");
     systematics [key].SetHistoNameLow( "h_"+key+"_symm_down");
     model.AddHistoSys (systematics[key]);
-
+   
 								  
   }
 
   std::cout << GRN <<"Adding the model to the region" << FIN << std::endl;
   chan.AddSample( model );
   meas.AddChannel( chan );
+
+
+  // std::cout << "DEBUG Is systematics filled?" << std::endl;
+  // for (std::pair <std::string, HistoSys> s : systematics ){
+  //    std::cout << "sys " << s.first << std::endl;
+  // }
   
   meas.CollectHistograms();
   meas.PrintTree();
+  meas.PrintXML( "xmlFromCCode", meas.GetOutputFilePrefix() );
+ 
+  // std::cout << "DEBUG Looping over systematics" << std::endl;
+  // for (auto sys : model.GetHistoSysList () )
+  //   {
+  //     std::cout << "sys " << sys.GetName() << std::endl;
+  //   }
+
   // std::cout << GRN <<"Creating the workspace!" << FIN <<std::endl;
   // HistoToWorkspaceFactoryFast hist2workspace (meas);
   // MakeSingleChannelModel workspace = hist2workspace.MakeSingleChannelModel(meas, chan);
@@ -100,9 +121,8 @@ void fitter(std::string filename, std::string label) {
   // workspace.writeToFile("output/HistFactoryWorkspace.root");
   std::cout << GRN <<"MEASURE!" << FIN << std::endl;
   
-  // MakeModelAndMeasurementFast( meas );
-
-
+  MakeModelAndMeasurementFast( meas );
+  
 
   
   

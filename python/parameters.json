@@ -88,8 +88,8 @@
       "t0": 1
     },
     "parameters_Lombardia_scheduling_corrected_definitive" :
-    { "beta" : 0.052,
-      "k" : 12,
+    { "beta" : 0.043,
+      "k" : 14,
       "gamma": 1e-5,
       "delta": 0.20,
       "mu" : 0.03,
@@ -111,11 +111,11 @@
     "simulation_parameters":
     {
 	"TIME_MAX" : 120,
-	"SET_OF_PARAMETERS" : "parameters_Lombardia_scheduling_definitive",
+	"SET_OF_PARAMETERS" : "parameters_Lombardia_scheduling_corrected_definitive",
 	"VERBOSE" : "FALSE",
-	"SCAN_PARAMETERS" : ["gamma","delta"],
+	"SCAN_PARAMETERS" :  ["d2","tau"],
 	"DISPLAY_DATA" : "Lombardia",
-	"IMPROVED_MODEL" : "FALSE",
+	"IMPROVED_MODEL" : "TRUE",
 	"SAVE_HISTOGRAMS" : "TRUE"
     }
 }

@@ -87,7 +87,8 @@ if __name__ == "__main__":
     if len(parameters_store["simulation_parameters"]["SCAN_PARAMETERS"])!=0 and parameters_store["simulation_parameters"]["SCAN_PARAMETERS"] != "FALSE":
         import copy
         # factors = [1e-1,0.5,1.0,2.,10.]
-        factors = [0.5,0.75,1.,1.25,2]
+        # factors = [0.5,0.75,1.,1.25,2]
+        factors = [0.75,0.9,1.,1.1,1.25]
         histories_for_scan = dict()
         print('\n\nStarting scan over parameters to check the effect')
         parameters_store_hard_copy = copy.deepcopy(parameters_store)

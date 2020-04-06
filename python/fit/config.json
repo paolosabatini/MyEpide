@@ -33,10 +33,10 @@
 	"rootfile" : "baseline.root",
 
 	"nominal" : "h_nominal",
-	"beta_up" : "h_beta_0.065",
-	"beta_down" : "h_beta_0.039",
-	"k_down" : "h_k_9.0",
-	"k_up" : "h_k_15.0",
+	"beta_up" : "h_beta_0.032",
+	"beta_down" : "h_beta_0.05375",
+	"k_down" : "h_k_10.5",
+	"k_up" : "h_k_17.5",
 	"gamma_down" : "h_gamma_7.5e-06",
 	"gamma_up" : "h_gamma_1.25e-05",
 	"delta_down" : "h_delta_0.15",
@@ -49,7 +49,33 @@
 	"tau_up" : "h_tau_7",
 
 	"bin_min": 0,
-	"bin_max": 29,
+	"bin_max": 39,
+	"rebin": 5,
+	"data" : "h_data"
+    },
+    
+    "aggressive" : {
+	"file" : "../files/Lombardia_scheduling_corrected_definitive_histos.dat",
+	"rootfile" : "aggressive.root",
+
+	"nominal" : "h_nominal",
+	"beta_up" : "h_beta_0.0387",
+	"beta_down" : "h_beta_0.0473",
+	"k_down" : "h_k_12.6",
+	"k_up" : "h_k_15.4",
+	"gamma_down" : "h_gamma_9e-06",
+	"gamma_up" : "h_gamma_1.1e-05",
+	"delta_down" : "h_delta_0.18",
+	"delta_up" : "h_delta_0.22",
+	"mu_down" : "h_mu_0.027",
+	"mu_up" : "h_mu_0.033",
+	"d2_down" : "h_d2_0.027",
+	"d2_up" : "h_d2_0.033",
+	"tau_down" : "h_tau_4",
+	"tau_up" : "h_tau_6",
+
+	"bin_min": 0,
+	"bin_max": 39,
 	"rebin": 5,
 	"data" : "h_data"
     },

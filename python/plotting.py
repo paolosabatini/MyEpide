@@ -118,12 +118,12 @@ def plot_data_vs_model (dataset, history, parameters_store, SET_OF_PARAMETERS):
     ax.set_xlabel ("Time [days]")
     ax.set_ylabel ("Total cases [Q + D + R]")
     #plt.ylim ( (1, 10*max( [e.TOT for t,e in history.items() if e.time<len(dataset["t"])] )) )
-    #plt.ylim ( (1, 10*max(dataset["tot"])) )
-    #plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*1.25) )
+    # plt.ylim ( (1, 10*max(dataset["tot"])) )
+    plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*1.25) )
     
-    plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*2) )
+    # plt.xlim ( (min( [e.time for t,e in history.items()] ), len (dataset["t"])*2) )
     plt.ylim ( (1, 1.5*max(dataset["tot"])) )
-    #plt.yscale('log')
+    # plt.yscale('log')
     legend = ax.legend(loc='upper right', frameon=False)
     font_size = 10
     plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$\beta='+str(parameters_store[SET_OF_PARAMETERS]["beta"])+'$', fontsize=font_size)

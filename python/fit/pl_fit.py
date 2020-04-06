@@ -1,6 +1,6 @@
 #/usr/bin/env python
 
-FIT_SETUP = 'baseline'
+FIT_SETUP = 'aggressive'
 EXPORT = True
 from ROOT import TH1F, TCanvas
 
@@ -118,9 +118,9 @@ if __name__ == "__main__":
             h.Write ('h_'+key)
         rootfile.Close()
 
-    #os.system ( 'root -l fitter.C ("'+ROOT_FILE+'")' )
+    # os.system ( 'root -l fitter.C ("'+ROOT_FILE+'")' )
     print (bcolors.OKGREEN+"Launching the fitter.."+bcolors.ENDC)
-    os.system ( 'root -l -q '+"'"+'Root/fitter.C ("'+ROOT_FILE+'","'+FIT_SETUP+'")'+"'" )
+    # os.system ( 'root -l -q '+"'"+'Root/fitter.C ("'+ROOT_FILE+'","'+FIT_SETUP+'")'+"'" )
 
 
 
