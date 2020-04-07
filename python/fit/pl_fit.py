@@ -107,7 +107,20 @@ if __name__ == "__main__":
                 # print "up mod "+str( (nom+abs(up_var-down_var)/2. if nom+abs(up_var-down_var)/2.>0 else 0) )+" down original "+str( (nom-abs(up_var-down_var)/2. if nom-abs(up_var-down_var)/2.>0 else 0) )
             from math import sqrt
             histos ["nominal_prefit"].SetBinError (b, sqrt (histos ["nominal_prefit"].GetBinError(b)*histos ["nominal_prefit"].GetBinError(b)+(histos [name+"_symm_up"].GetBinContent(b)-histos ["nominal"].GetBinContent(b))*(histos [name+"_symm_up"].GetBinContent(b)-histos ["nominal"].GetBinContent(b))));
-            
+
+    #
+    # Corrections systematics 20%
+    #
+    correction_systematic = 0.2
+    for b in range (1, histos ["nominal"].GetXaxis().GetNbins()+1):
+        histos ["corrbin"+str(b)+"_symm_up"] = histos["nominal"].Clone ("corrbin"+str(b)+"_symm_up")
+        histos ["corrbin"+str(b)+"_symm_down"] = histos["nominal"].Clone ("corrbin"+str(b)+"_symm_down")
+        nominal_content = histos ["nominal"].GetBinContent (b)
+        histos ["corrbin"+str(b)+"_symm_up"] . SetBinContent (b,(1.+correction_systematic)*nominal_content)
+        histos ["corrbin"+str(b)+"_symm_down"] . SetBinContent (b,(1.-correction_systematic)*nominal_content)
+        from math import sqrt
+        histos ["nominal_prefit"] . SetBinError (b, sqrt ( histos ["nominal_prefit"].GetBinError(b)*histos ["nominal_prefit"].GetBinError(b)+correction_systematic*correction_systematic ) )
+    
     import os
     if EXPORT and not os.path.exists(ROOT_FILE):
         print (bcolors.OKGREEN+"Exporting into: "+ROOT_FILE+bcolors.ENDC)
@@ -120,7 +133,7 @@ if __name__ == "__main__":
 
     # os.system ( 'root -l fitter.C ("'+ROOT_FILE+'")' )
     print (bcolors.OKGREEN+"Launching the fitter.."+bcolors.ENDC)
-    # os.system ( 'root -l -q '+"'"+'Root/fitter.C ("'+ROOT_FILE+'","'+FIT_SETUP+'")'+"'" )
+    os.system ( 'root -l -q '+"'"+'Root/fitter.C ("'+ROOT_FILE+'","'+FIT_SETUP+'")'+"'" )
 
 
 

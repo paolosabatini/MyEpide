@@ -14,6 +14,9 @@ using namespace HistFactory;
  
 void fitter(std::string filename, std::string label) {
 
+  std::string plot_dir = "plots/"+filename.substr(0,filename.find (".root"))+"/";
+  // ROOT::SumW2Error (kFALSE);
+  
   std::cout << GRN<<"FITTER::INFO Opening " << filename << ".." <<FIN<< std::endl;
   TFile* rootfile = new TFile (filename.c_str(),"READ");
 
@@ -29,11 +32,12 @@ void fitter(std::string filename, std::string label) {
     TObject* obj = key->ReadObj();
     if (!obj->IsA()->InheritsFrom("TH1")) continue;
     std::string name = std::string (obj->GetName());
-    name = name.substr(name.find ("_")+1);
+    name = (name.find ("h_")!=std::string::npos) ?
+      name.substr(name.find ("_")+1) : name;
     histos [name] = (TH1F*) obj;
 
     std::cout << GRN <<"\t * "<< name << FIN << std::endl;
-
+ 
   }
       
   std::cout << GRN <<"\n\nStarting setting up the HistFactory workspace.. " << FIN<<std::endl;
@@ -55,7 +59,7 @@ void fitter(std::string filename, std::string label) {
   Channel  chan( "TimeFrame" );
   // chan.SetStatErrorConfig(0.05, "Poisson");
   std::cout<<GRN<<"\t Region = TimeFrame"<<FIN<<std::endl;
-  chan.SetData( "h_nominal",  filename );
+  chan.SetData( "h_data",  filename );
   // chan.SetData( "h_data",  filename );
   std::cout<<GRN<<"\t Data = h_data"<<FIN<<std::endl;
   //
@@ -75,11 +79,12 @@ void fitter(std::string filename, std::string label) {
       continue;
     if (h.first.find ("nominal")!=std::string::npos || h.first.find ("prefit")!=std::string::npos) 
       continue;
-    if (h.first.find ("symm")!=std::string::npos) 
+    if (h.first.find ("symm")!=std::string::npos && h.first.find ("corrbin")==std::string::npos) 
       continue;
     // if (h.first.find ("beta")==std::string::npos) 
     //   continue;
     std::string key = h.first.substr(0,h.first.find ("_"));
+    // std::string key = h.first;
     
     systematics [key] = HistoSys(key);
     //std::cout << GRN << "\t Systematics = " << key <<" to model" << FIN << std::endl;
@@ -98,6 +103,7 @@ void fitter(std::string filename, std::string label) {
   meas.AddChannel( chan );
 
 
+  
   // std::cout << "DEBUG Is systematics filled?" << std::endl;
   // for (std::pair <std::string, HistoSys> s : systematics ){
   //    std::cout << "sys " << s.first << std::endl;
@@ -106,22 +112,38 @@ void fitter(std::string filename, std::string label) {
   meas.CollectHistograms();
   meas.PrintTree();
   meas.PrintXML( "xmlFromCCode", meas.GetOutputFilePrefix() );
- 
-  // std::cout << "DEBUG Looping over systematics" << std::endl;
-  // for (auto sys : model.GetHistoSysList () )
-  //   {
-  //     std::cout << "sys " << sys.GetName() << std::endl;
-  //   }
 
-  // std::cout << GRN <<"Creating the workspace!" << FIN <<std::endl;
-  // HistoToWorkspaceFactoryFast hist2workspace (meas);
-  // MakeSingleChannelModel workspace = hist2workspace.MakeSingleChannelModel(meas, chan);
 
-  // workspace.SetName("HistFactoryWorkspace");
-  // workspace.writeToFile("output/HistFactoryWorkspace.root");
-  std::cout << GRN <<"MEASURE!" << FIN << std::endl;
+  //
+  // Set some initial values & fit
+  //
+  std::cout << GRN <<"Exporting the workspace!" << FIN << std::endl;
+  RooWorkspace* w = HistoToWorkspaceFactoryFast (meas).MakeCombinedModel(meas);
+  w->var ("alpha_beta") -> setVal( -1. );
+  w->var ("alpha_corrbin4") -> setVal ( +1. );
+  w->var ("alpha_corrbin2") -> setVal ( +2. );
+  RooFitResult* r =w->pdf("model_TimeFrame")->fitTo( *w->data( "obsData" ) , RooFit::Save() );
+
+  //
+  // Output of the parameters!
+  //
+  std::map <std::string, TCanvas*> canvases;
+  std::map <std::string, TH2*> histos2D;
+
+  std::cout << GRN <<"Printing resutls: VERBOSE" << FIN << std::endl;
+  r->Print("v");
+
+
+  // Correlation matrix
+  gStyle->SetOptStat(0) ;
+  gStyle->SetPalette(1) ;
+  histos2D ["corr_matrix"] = r->correlationHist() ;
+  canvases ["corr_matrix"] = new TCanvas ("corr_matrix","Correlation matrix", 600,600);
+  histos2D ["corr_matrix"] -> Draw("colz");
+  canvases ["corr_matrix"] -> SaveAs ((plot_dir+"/CorrMatrix.pdf").c_str());
   
-  MakeModelAndMeasurementFast( meas );
+  // std::cout << GRN <<"MEASURE!" << FIN << std::endl;
+  // MakeModelAndMeasurementFast( meas );
   
 
   

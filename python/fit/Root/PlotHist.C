@@ -45,14 +45,16 @@ void PlotHist(std::string filename){
     if (h.first.find ("nominal")!=std::string::npos ||
 	h.first.find ("data")!=std::string::npos ||
 	h.first.find ("_down")!=std::string::npos ||
-	h.first.find ("r_")!=std::string::npos ||
-	h.first.find ("symm")!=std::string::npos) continue;
+	h.first.find ("r_")!=std::string::npos ) continue;
+    if(	( h.first.find ("symm")!=std::string::npos && h.first.find ("bin")==std::string::npos) ) continue;
+
     
     // if (h.first.find ("gamma")==std::string::npos &&
     // 	h.first.find ("beta")==std::string::npos) continue;
     
+ 
     std::string name = h.first.substr (0, h.first.find ("_"));
-    std::cout << GRN <<"\t Syst: "<< name << FIN << std::endl;
+    std::cout << GRN <<"\t Syst: "<< name << FIN << " ( " << h.first << ")" << std::endl;
 
     canvases ["syst_"+name] = new TCanvas ( ("syst_"+name).c_str(), ("syst_"+name).c_str(), 500,500);
     canvases ["syst_"+name] -> cd ();
@@ -67,26 +69,30 @@ void PlotHist(std::string filename){
     histos ["nominal"] -> SetStats (0);
     histos ["nominal"] -> SetLineColor (kGray+1);
     histos ["nominal"] -> SetLineWidth (2);
-    histos [name+"_down"] -> SetLineColor (kBlue-7);
-    histos [name+"_down"] -> SetLineWidth (2);
+    if (name.find ("corr")==std::string::npos){
+      histos [name+"_down"] -> SetLineColor (kBlue-7);
+      histos [name+"_down"] -> SetLineWidth (2);
+      histos [name+"_up"] -> SetLineColor (kRed+3);
+      histos [name+"_up"] -> SetLineWidth (2);
+    }
     histos [name+"_symm_down"] -> SetLineColor (kBlue-7);
     histos [name+"_symm_down"] -> SetLineWidth (2);
     histos [name+"_symm_down"] -> SetLineStyle (2);
-    histos [name+"_up"] -> SetLineColor (kRed+3);
-    histos [name+"_up"] -> SetLineWidth (2);
     histos [name+"_symm_up"] -> SetLineColor (kRed+3);
     histos [name+"_symm_up"] -> SetLineWidth (2);
     histos [name+"_symm_up"] -> SetLineStyle (2);
     
-    float ymax = (histos ["nominal"]->GetMaximum () > histos [name+"_down"] -> GetMaximum()) ?
-      histos ["nominal"]->GetMaximum () : histos [name+"_down"]->GetMaximum () ;
-    ymax =  (histos [name+"_up"]->GetMaximum () > histos [name+"_down"] -> GetMaximum()) ?
-      histos [name+"_up"]->GetMaximum () : histos [name+"_down"]->GetMaximum () ;
+    float ymax = (histos ["nominal"]->GetMaximum () > histos [name+"_symm_down"] -> GetMaximum()) ?
+      histos ["nominal"]->GetMaximum () : histos [name+"_symm_down"]->GetMaximum () ;
+    ymax =  (histos [name+"_symm_up"]->GetMaximum () > histos [name+"_symm_down"] -> GetMaximum()) ?
+      histos [name+"_symm_up"]->GetMaximum () : histos [name+"_symm_down"]->GetMaximum () ;
 
     histos ["nominal"] -> GetYaxis ()-> SetRangeUser (0, 1.5*ymax);
     histos ["nominal"] -> Draw ("hist");
-    histos [name+"_down"] -> Draw ("hist same");
-    histos [name+"_up"] -> Draw ("hist same");
+    if (name.find ("corr")==std::string::npos){
+      histos [name+"_down"] -> Draw ("hist same");
+      histos [name+"_up"] -> Draw ("hist same");
+    }
     histos [name+"_symm_down"] -> Draw ("hist same");
     histos [name+"_symm_up"] -> Draw ("hist same");
 
@@ -97,8 +103,10 @@ void PlotHist(std::string filename){
     TLegend* leg = new TLegend (0.2,0.7,0.6,0.88);
     leg->SetBorderSize(0);
     leg->SetTextSize(0.04);
-    leg->AddEntry (histos [name+"_down"],(name+" down").c_str(),"l");
-    leg->AddEntry (histos [name+"_up"],(name+" up").c_str(),"l");
+    if (name.find ("corr")==std::string::npos){
+      leg->AddEntry (histos [name+"_down"],(name+" down").c_str(),"l");
+      leg->AddEntry (histos [name+"_up"],(name+" up").c_str(),"l");
+    }
     leg->AddEntry (histos [name+"_symm_down"],(name+" down (symmetr.)").c_str(),"l");
     leg->AddEntry (histos [name+"_symm_up"],(name+" up (symmetr.)").c_str(),"l");
     leg->Draw();
@@ -114,19 +122,21 @@ void PlotHist(std::string filename){
     histos ["r_nominal"] = (TH1F*) histos ["nominal"] -> Clone ("r_nominal");
     histos ["r_nominal"] -> Add (histos ["nominal"], -1);
     histos ["r_nominal"] -> Divide ( histos ["nominal"] );
-    histos ["r_"+name+"_down"] = (TH1F*) histos [name+"_down"] -> Clone ( ("r_"+name+"_down").c_str() );
-    histos ["r_"+name+"_down"] -> Add ( histos ["nominal"],-1 );
-    histos ["r_"+name+"_down"] -> Divide ( histos ["nominal"] );
-    histos ["r_"+name+"_symm_down"] = (TH1F*) histos [name+"_symm_down"] -> Clone ( ("r_"+name+"_symm_down").c_str() );
-    histos ["r_"+name+"_symm_down"] -> Add ( histos ["nominal"],-1 );
-    histos ["r_"+name+"_symm_down"] -> Divide ( histos ["nominal"] );
-    histos ["r_"+name+"_up"] = (TH1F*) histos [name+"_up"] -> Clone ( ("r_"+name+"_up").c_str() );
-    histos ["r_"+name+"_up"] -> Add (histos ["nominal"], -1);
-    histos ["r_"+name+"_up"] -> Divide ( histos ["nominal"] );
+    if (name.find ("corr")==std::string::npos){
+      histos ["r_"+name+"_down"] = (TH1F*) histos [name+"_down"] -> Clone ( ("r_"+name+"_down").c_str() );
+      histos ["r_"+name+"_down"] -> Add ( histos ["nominal"],-1 );
+      histos ["r_"+name+"_down"] -> Divide ( histos ["nominal"] );
+      histos ["r_"+name+"_up"] = (TH1F*) histos [name+"_up"] -> Clone ( ("r_"+name+"_up").c_str() );
+      histos ["r_"+name+"_up"] -> Add (histos ["nominal"], -1);
+      histos ["r_"+name+"_up"] -> Divide ( histos ["nominal"] );
+    }
     histos ["r_"+name+"_symm_up"] = (TH1F*) histos [name+"_symm_up"] -> Clone ( ("r_"+name+"_symm_up").c_str() );
     histos ["r_"+name+"_symm_up"] -> Add (histos ["nominal"], -1);
     histos ["r_"+name+"_symm_up"] -> Divide ( histos ["nominal"] );
-    histos ["r_data"] = (TH1F*) histos ["data"] -> Clone ("r_nominal");
+    histos ["r_"+name+"_symm_down"] = (TH1F*) histos [name+"_symm_down"] -> Clone ( ("r_"+name+"_symm_down").c_str() );
+    histos ["r_"+name+"_symm_down"] -> Add ( histos ["nominal"],-1 );
+    histos ["r_"+name+"_symm_down"] -> Divide ( histos ["nominal"] );
+histos ["r_data"] = (TH1F*) histos ["data"] -> Clone ("r_nominal");
     histos ["r_data"] -> Add (histos ["nominal"], -1);
     histos ["r_data"] -> Divide ( histos ["nominal"] );
     histos ["r_nominal"] -> GetYaxis () -> SetRangeUser (-2,2);
@@ -138,8 +148,10 @@ void PlotHist(std::string filename){
     histos ["r_nominal"] -> GetYaxis () -> SetTitleOffset (0.6);
     histos ["r_nominal"] -> GetXaxis () -> SetLabelSize (0.08);
     histos ["r_nominal"] -> Draw ("hist");
-    histos ["r_"+name+"_up"] -> Draw ("hist same");
-    histos ["r_"+name+"_down"] -> Draw ("hist same");
+    if (name.find ("corr")==std::string::npos){
+      histos ["r_"+name+"_up"] -> Draw ("hist same");
+      histos ["r_"+name+"_down"] -> Draw ("hist same");
+    }
     histos ["r_"+name+"_symm_up"] -> Draw ("hist same");
     histos ["r_"+name+"_symm_down"] -> Draw ("hist same");
     histos ["r_data"] -> Draw ("e1 x0 same");

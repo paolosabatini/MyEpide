@@ -50,7 +50,7 @@
 
 	"bin_min": 0,
 	"bin_max": 39,
-	"rebin": 5,
+	"rebin": 4,
 	"data" : "h_data"
     },
     
@@ -76,7 +76,7 @@
 
 	"bin_min": 0,
 	"bin_max": 39,
-	"rebin": 5,
+	"rebin": 10,
 	"data" : "h_data"
     },
 
