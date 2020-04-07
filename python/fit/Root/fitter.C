@@ -11,7 +11,28 @@ bool DEBUG = 1;
 
 using namespace RooStats;
 using namespace HistFactory;
- 
+
+
+TString decode_var_names(TString label){
+  std::map <TString, TString> dict;
+  dict [  "ModelNormFactor" ] =  "SF";
+  dict [ "alpha_beta" ] = "#beta";
+  dict [ "alpha_corrbin1" ] =  "Corr. bin 1";
+  dict [ "alpha_corrbin2" ] =  "Corr. bin 2";
+  dict [ "alpha_corrbin3"]  = "Corr. bin 3";
+  dict [ "alpha_corrbin4" ]  = "Corr. bin 4";
+  dict [ "alpha_d2" ]  =  "d_{2}";
+  dict [ "alpha_delta" ] =  "#delta";
+  dict [ "alpha_gamma" ] = "#gamma";
+  dict [ "alpha_k" ] = "k";
+  dict ["alpha_mu" ] =  "#mu";
+  dict [ "alpha_tau" ] = "#tau";
+
+  return dict [label];
+  
+};
+
+
 void fitter(std::string filename, std::string label) {
 
   std::string plot_dir = "plots/"+filename.substr(0,filename.find (".root"))+"/";
@@ -124,46 +145,127 @@ void fitter(std::string filename, std::string label) {
   w->var ("alpha_corrbin2") -> setVal ( +2. );
   RooFitResult* r =w->pdf("model_TimeFrame")->fitTo( *w->data( "obsData" ) , RooFit::Save() );
 
+  // ================================================================== //
+  
   //
   // Output of the parameters!
   //
   std::map <std::string, TCanvas*> canvases;
   std::map <std::string, TH2*> histos2D;
+  std::map <std::string, TGraphErrors*> graphs;
 
   std::cout << GRN <<"Printing resutls: VERBOSE" << FIN << std::endl;
   r->Print("v");
 
+  std::cout << GRN <<"\t * Correlation Matrix" << FIN << std::endl;
 
+  //
   // Correlation matrix
+  //
   gStyle->SetOptStat(0) ;
-  gStyle->SetPalette(1) ;
+  gStyle->SetPalette(105) ;
   histos2D ["corr_matrix"] = r->correlationHist() ;
   canvases ["corr_matrix"] = new TCanvas ("corr_matrix","Correlation matrix", 600,600);
-  histos2D ["corr_matrix"] -> Draw("colz");
+  
+  for (int x =1; x <= histos2D ["corr_matrix"]-> GetXaxis()-> GetNbins(); x++){
+    histos2D ["corr_matrix"]->GetXaxis()->SetBinLabel (x, decode_var_names(histos2D ["corr_matrix"]->GetXaxis()->GetBinLabel(x)));
+  }
+  for (int y =1; y <= histos2D ["corr_matrix"]-> GetYaxis()-> GetNbins(); y++){
+    histos2D ["corr_matrix"]->GetYaxis()->SetBinLabel (y, decode_var_names(histos2D ["corr_matrix"]->GetYaxis()->GetBinLabel(y)));
+  }
+
+  gStyle->SetPaintTextFormat(".2f");
+  canvases ["corr_matrix"] -> SetBottomMargin (0.12);
+  canvases ["corr_matrix"] -> SetTopMargin (0.02);
+  canvases ["corr_matrix"] -> SetRightMargin (0.02);
+  canvases ["corr_matrix"] -> SetLeftMargin (0.12);
+
+  histos2D ["corr_matrix"] -> SetTitle ("");
+  histos2D ["corr_matrix"] -> Draw("col");
+  histos2D ["corr_matrix"] -> Draw("TEXT45 same");
+  
   canvases ["corr_matrix"] -> SaveAs ((plot_dir+"/CorrMatrix.pdf").c_str());
+
+  //
+  // Fitted NPs plot!
+  //
+  std::cout << GRN <<"\t * Nuisance Parameters" << FIN << std::endl;
   
-  // std::cout << GRN <<"MEASURE!" << FIN << std::endl;
-  // MakeModelAndMeasurementFast( meas );
+  canvases ["nps"] = new TCanvas ("nps","Nuisance parameters", 600,600);  
+  graphs ["nps"] = new TGraphErrors (systematics.size());
+
+  RooArgList list_of_parameters (r->floatParsFinal());
+  std::map <std::string, RooRealVar*> vars;
+
+  std::vector <TString> par_names;
+  
+  for (int i = 0; i < list_of_parameters.getSize(); i++){
+    list_of_parameters[i].Print ();
+    //std::cout << GRN << " -> " << list_of_parameters[i].GetName() << " " << list_of_parameters[i]->getVal () << FIN <<std::endl;
+    std::string name_par (list_of_parameters[i].GetName());
+    vars [name_par] = (RooRealVar*) r->floatParsFinal().find(name_par.c_str());
+    // std::cout << GRN << " -> " << name_par << " " << vars[name_par]->getVal () << " " << vars[name_par]->getError() << FIN <<std::endl;
+    graphs ["nps"]->SetPoint (i, vars[name_par]->getVal (), i+2);
+    graphs ["nps"]->SetPointError (i, vars[name_par]->getError (), 0.);
+    par_names.push_back (name_par);
+  }
+
+  graphs["nps"]->Draw("apz");
+
+  
+  float min_x = -2.5, max_x=7;
+  graphs["nps"]->GetXaxis()->SetLimits(min_x,max_x);
+  graphs["nps"]->GetYaxis()->SetLimits(0,systematics.size()+2+5);
+  graphs["nps"]->SetLineWidth(2);
+  graphs["nps"]->SetMarkerSize(1.2);
+  graphs["nps"]->SetMarkerStyle(20);
+  graphs["nps"]->SetTitle("");
+  graphs["nps"]->GetYaxis()->SetLabelSize(0);
+  graphs["nps"]->GetYaxis()->SetTickSize(0);
+
+  TLatex latex;
+  latex.SetTextSize(0.025);
+  
+  for (unsigned i = 0; i< par_names.size(); i++){
+    TString key = par_names[i];
+    Double_t x,y, er_x;
+    graphs["nps"]->GetPoint(i,x,y);
+    er_x = graphs["nps"]->GetErrorX(i);
+    
+    latex.DrawLatex (min_x+(max_x-min_x)*0.55, i+2,
+		     decode_var_names(key) );
+    latex.DrawLatex (min_x+(max_x-min_x)*0.70, i+2,
+		     "=" );
+    latex.DrawLatex (min_x+(max_x-min_x)*0.75, i+2,
+		     Form ("%.1f #pm %.1f",x,er_x ) );
+  }
+
+  TBox cl (0-1,3-0.25,0+1,systematics.size()+2.25);
+  cl.SetLineWidth(0);
+  cl.SetFillStyle(3002);
+  cl.SetFillColor (kGray+1);
+  cl.Draw();
+
+  TLine l(0,3-0.25,0,systematics.size()+2.25);
+  l.SetLineColor(kBlack);
+  l.SetLineWidth(1);
+  l.SetLineStyle(2);
+  l.DrawLine (1,2-0.25,1,2+0.25);
+  l.Draw();
+  
+  
+  canvases ["nps"] -> SaveAs ( (plot_dir+"PoI.pdf").c_str() );
+  // ModelConfig* mc = (ModelConfig*) w->obj("mc");
+  // RooArgSet* nps = (RooArgSet*) mc->GetNuisanceParameters ();
+  // TIterator* nps_iter = nps->createIterator();
+  // auto np = (RooAbsArg*)nps_iter->Next();
+  // while (np)    {
+  //   std::cout <<np->getVal() << " " <<np->getError() << std::endl;
+						      
+  // }
   
 
+  // nps->Print ();
   
-  
-
-  // //// 
-  // //// Test plot
-  // ////
-  // TCanvas* c_test = new TCanvas("test","test", 400,400);
-  // RooPlot* frame = w.var("t")->frame() ;
-  // roohistos["data"]->plotOn(frame) ;
-  // w.pdf("model")->plotOn(frame) ;  
-  // frame->Draw();
-  // c_test->Draw();
-  // c_test->SaveAs ("test.pdf"); 
-
-
-
-
-
-
 
 }
