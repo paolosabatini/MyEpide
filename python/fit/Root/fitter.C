@@ -194,7 +194,10 @@ void fitter(std::string filename, std::string label) {
   canvases ["nps"] = new TCanvas ("nps","Nuisance parameters", 600,600);  
   graphs ["nps"] = new TGraphErrors (systematics.size());
 
+
   RooArgList list_of_parameters (r->floatParsFinal());
+  histos ["nps"] = new TH1F ("nps","nps",list_of_parameters.getSize(),0,list_of_parameters.getSize());
+
   std::map <std::string, RooRealVar*> vars;
 
   std::vector <TString> par_names;
@@ -225,7 +228,7 @@ void fitter(std::string filename, std::string label) {
 
   TLatex latex;
   latex.SetTextSize(0.025);
-  
+  latex.SetTextFont(42);
   for (unsigned i = 0; i< par_names.size(); i++){
     TString key = par_names[i];
     Double_t x,y, er_x;
@@ -238,7 +241,19 @@ void fitter(std::string filename, std::string label) {
 		     "=" );
     latex.DrawLatex (min_x+(max_x-min_x)*0.75, i+2,
 		     Form ("%.1f #pm %.1f",x,er_x ) );
+
+    histos["nps"]->SetBinContent (i+1,x);
+    histos["nps"]->SetBinError (i+1,er_x);
+    histos["nps"]->GetXaxis()->SetBinLabel (i+1,key);
+
   }
+
+  TBox cl2 (1,3-0.25,2,systematics.size()+2.25);
+  cl2.SetLineWidth(0);
+  cl2.SetFillStyle(3002);
+  cl2.SetFillColor (kGray+2);
+  cl2.DrawBox(-1,3-0.25,-2,systematics.size()+2.25);
+  cl2.Draw();
 
   TBox cl (0-1,3-0.25,0+1,systematics.size()+2.25);
   cl.SetLineWidth(0);
@@ -255,17 +270,15 @@ void fitter(std::string filename, std::string label) {
   
   
   canvases ["nps"] -> SaveAs ( (plot_dir+"PoI.pdf").c_str() );
-  // ModelConfig* mc = (ModelConfig*) w->obj("mc");
-  // RooArgSet* nps = (RooArgSet*) mc->GetNuisanceParameters ();
-  // TIterator* nps_iter = nps->createIterator();
-  // auto np = (RooAbsArg*)nps_iter->Next();
-  // while (np)    {
-  //   std::cout <<np->getVal() << " " <<np->getError() << std::endl;
-						      
-  // }
-  
 
-  // nps->Print ();
-  
+
+  //
+  // Save correlation and NPs in a rootfile to be used afterwords
+  //
+  TFile* result_file = new TFile ( (plot_dir+"results.root").c_str(),"RECREATE");
+  result_file->cd();
+  histos2D ["corr_matrix"]->Write();
+  histos ["nps"] -> Write();
+  result_file->Close();
 
 }

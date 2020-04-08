@@ -190,7 +190,7 @@ histos ["r_data"] = (TH1F*) histos ["data"] -> Clone ("r_nominal");
 
   histos ["data"] -> Draw("same e1 x0");
 
-  TLegend* leg_nom = new TLegend (0.2,0.7,0.6,0.88);
+  TLegend* leg_nom = new TLegend (0.18,0.7,0.45,0.88);
   leg_nom->SetBorderSize(0);
   leg_nom->SetTextSize(0.04);
   leg_nom->AddEntry (histos ["data"],"Data","p");
@@ -227,7 +227,7 @@ histos ["r_data"] = (TH1F*) histos ["data"] -> Clone ("r_nominal");
   histos ["r_data"] -> Draw("same e1 x0");
 
 
-
+  canvases ["c_tot"] -> SaveAs ( (plot_dir+"ModelPrefit.pdf").c_str());
 
 
 }
