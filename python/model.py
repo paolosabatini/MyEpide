@@ -6,9 +6,22 @@ max_t = 25
 
 
 
-def correct_delta_with_tampons (event_current, parameters_store,string_to_use):
+def correct_delta_with_tampons (event_current, parameters_store,string_to_use, firstEvent=False):
     delta = parameters_store[string_to_use]["delta"]
     t0 = parameters_store["initial_conditions"]["t0"]
+
+    # if 'postfit' in string_to_use and firstEvent:
+    #     for n,t in enumerate(list(tampons_correction)):
+    #         var = 0.20
+    #         if n < 10:
+    #             tampons_correction [n] = (1-1.2*0.2)*t 
+    #         elif n < 20:
+    #             tampons_correction [n] = (1+1.2*0.2)*t 
+    #         elif n < 30:
+    #             tampons_correction [n] = (1+0.8*0.2)*t 
+    #         else:
+    #             tampons_correction [n] = (1+0.0*0.2)*t 
+
     
     if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "FALSE": return delta    
     if (event_current.time-t0) >= len (tampons_correction) : return delta 
@@ -25,13 +38,18 @@ def correct_delta_with_tampons (event_current, parameters_store,string_to_use):
     # else: return delta_max
 
 def schedule_k (event_current, parameters_store,string_to_use):
+    reopening_t = 45
     t0 = parameters_store["initial_conditions"]["t0"]
     k_max = parameters_store[string_to_use]["k"]
     if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "FALSE": return k_max
     k_min = min (2, k_max/3)
     if (event_current.time-t0) < min_t: return k_max
     elif (event_current.time-t0) < max_t: return k_max + (k_min-k_max)/abs(max_t-min_t)* (event_current.time-min_t)
-    else: return k_min
+    else:
+        if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "REOPENING" and (event_current.time-t0) > reopening_t :
+            return k_max
+        else:
+            return k_min
 
 class event:
     time = 0
@@ -54,7 +72,7 @@ class event:
     tot = 0
     def __init__ (self, time, parameters_store, string_to_use):
         self.time = time
-        self.delta = correct_delta_with_tampons (self, parameters_store, string_to_use)
+        self.delta = correct_delta_with_tampons (self, parameters_store, string_to_use, (time==0) )
         self.k = schedule_k (self, parameters_store, string_to_use)
        
     def update_test_euler (self, parameters_store, event, string_to_use):
@@ -131,6 +149,7 @@ class event:
         if parameters_store["simulation_parameters"]["VERBOSE"] == "TRUE":
             
             print( " > t "+str(self.time-delta_t)+" s "+str(event_precedent.s)+" e "+str(event_precedent.e)+" i "+str(event_precedent.i)+" q "+str(event_precedent.q)+" r "+str(event_precedent.r)+" d "+str(event_precedent.d))
+            print( " > schedule k "+str(self.k)+" delta "+str(self.delta))
             print( " > half-point t "+str(event_half_point.time)+" s "+str(event_half_point.s)+" e "+str(event_half_point.e)+" i "+str(event_half_point.i)+" q "+str(event_half_point.q)+" r "+str(event_half_point.r))
             print( " > derivative dsdt "+str(ds_dt)+" dedt "+str(de_dt)+" didt "+str(di_dt)+" dqdt "+str(dq_dt)+" drdt "+str(dr_dt))
             print( " > t "+str(self.time)+" s "+str(self.s)+" e "+str(self.e)+" i "+str(self.i)+" q "+str(self.q)+" r "+str(self.r)+" d "+str( self.d))

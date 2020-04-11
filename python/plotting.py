@@ -24,10 +24,11 @@ def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
     ax.plot ([e.time for t,e in history.items()], [e.Q for t,e in history.items()], 'b', label='Quarantined' )
     ax.plot ([e.time for t,e in history.items()], [e.R for t,e in history.items()], 'g--', label='Recovered')
     ax.plot ([e.time for t,e in history.items()], [e.D for t,e in history.items()], 'm--', label='Deaths')
+    ax.plot ([e.time for t,e in history.items()],[e.TOT for t,e in history.items()], 'k--', label='Total cases')
     ax.set_xlabel ("Time [days]")
     plt.ylim ( (1, 1.5*parameters_store[SET_OF_PARAMETERS]["N"]) )
     if parameters_store[SET_OF_PARAMETERS]["N"] > 1e3:
-        plt.ylim ( (1, 1.5*max ([e.R for t,e in history.items()])) )
+        plt.ylim ( (1, 1.75*max ([e.TOT for t,e in history.items()])) )
     # plt.yscale('log')
     legend = ax.legend(loc='upper right', frameon=False)
     font_size = 10
@@ -43,6 +44,11 @@ def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
     plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$t_{0}='+str(parameters_store["initial_conditions"]["t0"])+'$', fontsize=font_size)
     if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] != "FALSE":
         plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.70)*(plt.ylim()[1]-plt.ylim()[0]), 'k scheduled, '+r'$\delta$'+' corrected', fontsize=font_size)
+    if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "REOPENING":
+        plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.65)*(plt.ylim()[1]-plt.ylim()[0]), 'Reopening on the 67th day', fontsize=font_size)
+        plt.ylim( (0,2e5) )
+    if parameters_store["simulation_parameters"]["SCALE_FACTOR"] != "FALSE":
+        plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.65)*(plt.ylim()[1]-plt.ylim()[0]), r'SF='+str(parameters_store["simulation_parameters"]["SCALE_FACTOR"]), fontsize=font_size)
     print ("..saving plots/Summary_"+SET_OF_PARAMETERS+".pdf")
     fig.savefig("plots/Summary_"+SET_OF_PARAMETERS+".pdf", bbox_inches='tight')
 

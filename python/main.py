@@ -1,5 +1,6 @@
 #/usr/bin/env python3
 
+
 import json
 
 if __name__ == "__main__":
@@ -63,7 +64,29 @@ if __name__ == "__main__":
     # Shifting the time by t0
     for t,e in dict(history).items():
         e.time = e.time-parameters_store["initial_conditions"]["t0"]
+
         
+    # Introduce a scale factor (just for the postfit) -> tot, q, d, r
+    print parameters_store["simulation_parameters"]["SCALE_FACTOR"]
+    if (parameters_store["simulation_parameters"]["SCALE_FACTOR"]!="FALSE"):
+        sf = float (parameters_store["simulation_parameters"]["SCALE_FACTOR"])
+        for t,e in dict(history).items():
+            history[t].tot = e.tot*sf
+            history[t].q = e.q*sf
+            history[t].d = e.d*sf
+            history[t].r = e.d*sf
+            history[t].i = e.i*sf
+            history[t].e = e.e*sf
+            history[t].s = e.s*sf
+            history[t].TOT = e.TOT*sf
+            history[t].Q = e.Q*sf
+            history[t].D = e.D*sf
+            history[t].R = e.R*sf
+            history[t].I = e.I*sf
+            history[t].E = e.E*sf
+            history[t].S = e.S*sf
+
+            
     from plotting import plot_summary
     plot_summary (history, parameters_store, SET_OF_PARAMETERS)
 
