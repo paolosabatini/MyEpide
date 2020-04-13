@@ -105,3 +105,42 @@ The uncertainties are shrinked at higher bins, while enlarged in the lower bins 
   \caption{Post-fit prediction of the model with the corrections described in Figure~\ref{ssec:impr_model}, with parameters pulled as in Figure~\ref{fig:nps}a. The total uncertainty is given by summing all the post-fit uncertainties, correlated as in Figure~\ref{fig:nps}b.}
   \label{fig:postfit}
 \end{figure}
+
+\subsection{Predictions}
+The fitted set of parameters is used to make a prediction of the population classes evolutions, as shown in Figure~\ref{fig:model_postfit}.
+
+\begin{figure}
+\centering
+\subfloat {\includegraphics[width=0.4\textwidth]{imgs/Covid/Summary_parameters_Lombardia_scheduling_corrected_postfit.pdf}  }
+\subfloat {\includegraphics[width=0.4\textwidth]{imgs/Covid/R0_parameters_Lombardia_scheduling_corrected_postfit.pdf}  }
+  \caption{Prediction of the model tuned with the fitted parameters in Figure~\ref{fig:nps}a. Prediction of $R_0$ parameter against time (b).}
+  \label{fig:model_postfit}
+\end{figure}
+
+The model can be used to make some predictions of some observables and test it with observations. To estimate the uncertainty, a set of $1000$ pseudo-experiments is generated, obtained by extracting values of the parameters from the fitted distributions, taking into account the fitted correlations. Predictions are made by estimating mean and variance of the obtained distributions. Since the fit is performed on the total cases distributions, predictions on these quantities are more reliable. However, since quarantined population is the largest, especially in the fitted range, among the contributions in the total cases, also this estimation should be robust. The predictions on the number of number of deaths may be affected by the small contribution in the total case in the fitted range, and therefore not robust. However, in the initial tuning, the ratios between the contributions of the different classes is taken into account, so the obtained numbers should be in the same order of magnitude of the observations. A summary of all the predictions is summarised in Table~\ref{tab:predictions}.
+
+\begin{table}\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+Quantity & \phantom{abc} & Value \\
+\midrule
+\multicolumn{3}{@{}l@{}}{\emph{Quarantined people}}\\[1mm]
+Peak & \phantom{abc} & $ 36000 \pm 17000 $\\
+Peak time & \phantom{abc} & $ 38\pm1 $ days\\[3mm]
+
+\multicolumn{3}{@{}l@{}}{\emph{Deaths}}\\[1mm]
+Total deaths & \phantom{abc} & $ 11000 \pm 7000 $\\[3mm]
+
+\multicolumn{3}{@{}l@{}}{\emph{Total cases}}\\[1mm]
+Total & \phantom{abc} & $ 77000 \pm 46000 $\\
+Saturation time & \phantom{abc} & $ 53\pm6 $ days\\
+\bottomrule
+\end{tabular}
+\caption{Prediction of the model tuned with the fitted parameters in Figure~\ref{fig:nps}a. Dates are expressed in days after February 27th, the first day of available data.}
+  \label{tab:predictions}
+\end{table}
+
+Currently (on 13/04/2020), from the updated data on \cite{Lab24}, there are $60.314$ total cases, with $10.901$ deaths. Both numbers are compatible with the predictions. The model predicts the peak new quarantined (tested positive) cases on April 2nd, but not a simple comparison with data is possible. The observed peak of total new cases is observed between March 21st and 26th, 2020, one week earlier, but the peak of the daily new cases comes before the peak of quarantined population. A first decrease of total intensive care has been observed on April 5th, close to the expected peak. A comparison in terms of $R_0$ parameter is also possible. This corresponds to the infection power of each single individual. Here it is estimated as ratio of the quarantined and infected (or just quarantined) population at time $t$ with the same quantity at time $t-\tau$, where $\tau $ is the incubation time. The prediction of $R_0$ is shown in Figure~\ref{fig:model_postfit}, giving a $R_0$ estimated below one with only quarantined population data available around the 40th day, so on April 4th. The first indication of a $R_0<1$ in Italy is on April 9th \cite{R0}, still close to the expectations. However both the previous data are available only national-wise and not for Lombardy only, so results may differ a bit. Finally, the estimated on saturation, meaning reaching the $90$ of total cases, is on the 18/04/2020.\\
+
+
+

@@ -103,5 +103,33 @@
 	"bin_max": 31,
 	"rebin": 4,
 	"data" : "h_data"
+    },
+
+    "aggressive_finer" : {
+	"file" : "../files/Lombardia_scheduling_corrected_definitive_histos.dat",
+	"rootfile" : "aggressive_finer.root",
+
+	"nominal" : "h_nominal",
+	"beta_up" : "h_beta_0.0517",
+	"beta_down" : "h_beta_0.0423",
+	"k_down" : "h_k_10.8",
+	"k_up" : "h_k_13.2",
+	"gamma_down" : "h_gamma_9e-06",
+	"gamma_up" : "h_gamma_1.1e-05",
+	"delta_down" : "h_delta_0.18",
+	"delta_up" : "h_delta_0.22",
+	"mu_down" : "h_mu_0.027",
+	"mu_up" : "h_mu_0.033",
+	"d2_down" : "h_d2_0.027",
+	"d2_up" : "h_d2_0.033",
+	"tau_down" : "h_tau_4",
+	"tau_up" : "h_tau_6",
+
+	"bin_min": 0,
+	"bin_max": 39,
+	"rebin": 1,
+	"data" : "h_data"
     }
+
+
 }

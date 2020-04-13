@@ -1,6 +1,6 @@
 #/usr/bin/env python
 
-FIT_SETUP = 'aggressive'
+FIT_SETUP = 'aggressive_finer'
 EXPORT = True
 from ROOT import TH1F, TCanvas
 
