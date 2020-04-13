@@ -157,6 +157,20 @@
       "i0": 6.5e-5,
       "t0": 1
     },    
+    "parameters_Lombardia_scheduling_corrected_postfit_reopening6months" :
+    { "beta" : 0.0403,
+      "k" : 14.27,
+      "gamma": 1.019e-5,
+      "delta": 0.2039,
+      "mu" : 0.0306,
+      "d" : 2e-3,
+      "d1": 0,
+      "d2": 0.0306,
+      "tau": 5,
+      "N": 10e6,
+      "i0": 6.5e-5,
+      "t0": 1
+    },    
 
     "initial_conditions" :
     {
@@ -166,8 +180,8 @@
 
     "simulation_parameters":
     {
-	"TIME_MAX" : 120,
-	"SET_OF_PARAMETERS" : "parameters_Lombardia_scheduling_corrected_postfit_reopening67",
+	"TIME_MAX" : 630,
+	"SET_OF_PARAMETERS" : "parameters_Lombardia_scheduling_corrected_postfit_reopening6months",
 	"VERBOSE" : "FALSE",
 	"SCAN_PARAMETERS" :  "FALSE",
 	"DISPLAY_DATA" : "Lombardia",

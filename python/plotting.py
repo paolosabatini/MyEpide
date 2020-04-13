@@ -53,6 +53,49 @@ def plot_summary (history, parameters_store, SET_OF_PARAMETERS):
     fig.savefig("plots/Summary_"+SET_OF_PARAMETERS+".pdf", bbox_inches='tight')
 
     
+
+def plot_r0 (history, parameters_store, SET_OF_PARAMETERS):
+    
+    #Summary plot
+    fig, ax = plt.subplots()
+    tau = parameters_store[SET_OF_PARAMETERS]["tau"]
+    r0 = [ (history[t].I+history[t].Q)/(history[t-tau].I+history[t-tau].Q) for t,e in history.items() if t>tau]
+    r0_q = [ (history[t].Q)/(history[t-tau].Q) for t,e in history.items() if t>tau]
+    ax.plot ([e.time for t,e in history.items() if t>tau],
+             r0, 'g',label="Infected + Quarantined")
+    ax.plot ([e.time for t,e in history.items() if t>tau],
+             r0_q, 'b--',label="Only Quarantined")
+    ax.set_xlabel ("Time [days]")
+    ax.set_ylabel (r'$R_{0}$')
+    plt.ylim ( (0.75*min (r0), 1.25*max (r0) ) )
+    plt.xlim ( (tau, max ([e.time for t,e in history.items() if t>tau]) ) )
+    legend = ax.legend(loc='upper right', frameon=False)
+    # plt.yscale('log')
+    font_size = 10
+    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$\beta='+str(parameters_store[SET_OF_PARAMETERS]["beta"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.90)*(plt.ylim()[1]-plt.ylim()[0]), r'$k='+str(parameters_store[SET_OF_PARAMETERS]["k"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\gamma='+str(parameters_store[SET_OF_PARAMETERS]["gamma"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\mu='+str(parameters_store[SET_OF_PARAMETERS]["mu"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$i_{0}='+str(parameters_store["initial_conditions"]["i0"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.95)*(plt.ylim()[1]-plt.ylim()[0]), r'$d_{1}='+str(parameters_store[SET_OF_PARAMETERS]["d1"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.90)*(plt.ylim()[1]-plt.ylim()[0]), r'$d_{2}='+str(parameters_store[SET_OF_PARAMETERS]["d2"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.85)*(plt.ylim()[1]-plt.ylim()[0]), r'$\delta='+str(parameters_store[SET_OF_PARAMETERS]["delta"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.80)*(plt.ylim()[1]-plt.ylim()[0]), r'$\tau='+str(parameters_store[SET_OF_PARAMETERS]["tau"])+'$', fontsize=font_size)
+    plt.text(plt.xlim()[0]+(0.25)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.75)*(plt.ylim()[1]-plt.ylim()[0]), r'$t_{0}='+str(parameters_store["initial_conditions"]["t0"])+'$', fontsize=font_size)
+    if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] != "FALSE":
+        plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.70)*(plt.ylim()[1]-plt.ylim()[0]), 'k scheduled, '+r'$\delta$'+' corrected', fontsize=font_size)
+    if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "REOPENING":
+        plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.65)*(plt.ylim()[1]-plt.ylim()[0]), 'Reopening on the 67th day', fontsize=font_size)
+        plt.ylim( (0,2e5) )
+    if parameters_store["simulation_parameters"]["SCALE_FACTOR"] != "FALSE":
+        plt.text(plt.xlim()[0]+(0.05)*(plt.xlim()[1]-plt.xlim()[0]), plt.ylim()[0]+(0.65)*(plt.ylim()[1]-plt.ylim()[0]), r'SF='+str(parameters_store["simulation_parameters"]["SCALE_FACTOR"]), fontsize=font_size)
+
+    plt.plot ( [tau,max ([e.time for t,e in history.items()] )],[1,1],'k--') 
+
+    print ("..saving plots/R0_"+SET_OF_PARAMETERS+".pdf")
+    fig.savefig("plots/R0_"+SET_OF_PARAMETERS+".pdf", bbox_inches='tight')
+
+    
 def plot_scan (histories_for_scan, parameters_store, SET_OF_PARAMETERS):
     styles = [(0,(1,10)), 'dotted', '-', 'dashed', (0,(5,10))]
     quantities = ['S', 'E', 'I', 'Q', 'R']

@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
         
     # Introduce a scale factor (just for the postfit) -> tot, q, d, r
-    print parameters_store["simulation_parameters"]["SCALE_FACTOR"]
+    #print (parameters_store["simulation_parameters"]["SCALE_FACTOR"])
     if (parameters_store["simulation_parameters"]["SCALE_FACTOR"]!="FALSE"):
         sf = float (parameters_store["simulation_parameters"]["SCALE_FACTOR"])
         for t,e in dict(history).items():
@@ -87,8 +87,9 @@ if __name__ == "__main__":
             history[t].S = e.S*sf
 
             
-    from plotting import plot_summary
+    from plotting import plot_summary, plot_r0
     plot_summary (history, parameters_store, SET_OF_PARAMETERS)
+    plot_r0 (history, parameters_store, SET_OF_PARAMETERS)
 
     
     # #Test plot

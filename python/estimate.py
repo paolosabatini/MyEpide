@@ -4,7 +4,7 @@ import json
 
 fitname = "fit/plots/aggressive/results.root"
 plot_dir = "fit/plots/"+fitname.split("/")[2]+"/"
-DEBUG=False
+DEBUG=True
 n_pseudo_exp = 1000
 RELATIVE_VARIATION = 0.1
 
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     # Loop over the pseudo-exp starting
     #
     print ("\nStarting looping over randomly generated NPs")    
-    for i in range(1,n_pseudo_exp+1 if not DEBUG else 3):
+    for i in range(0,n_pseudo_exp+1 if not DEBUG else 3):
 
         
 
@@ -90,7 +90,9 @@ if __name__ == "__main__":
         #
         bad_sf = True
         while bad_sf:
-            
+
+
+
             extr_pars = [rand.Gaus (mean_pars[m],var_pars[m]) for m in range (0,len(mean_pars))]
             # extr_pars = copy.deepcopy(mean_pars)
             
@@ -135,9 +137,7 @@ if __name__ == "__main__":
                 new_par = (extr_pars[b-1])*float(parameters_store["initial_conditions"][decode_nps_to_parameters [name]])
             directory = SET_OF_PARAMETERS if not "Model" in name else "initial_conditions"
             current_parameter [directory][decode_nps_to_parameters [name]] = new_par if "tau" not in name else int (new_par) if new_par-int(new_par)<0.5 else int (new_par+1)
-
-
-            
+                        
 
         #    
         # Initial conditions
@@ -318,4 +318,6 @@ if __name__ == "__main__":
     canvases ["ttot_saturation"] . SetLeftMargin (0.12);
     latex.DrawLatexNDC(0.2,0.85,"Time at the total cases saturation = "+str(int(histos["ttot_saturation"].GetMean()))+" #pm "+str( int(histos["ttot_saturation"].GetRMS()) )+" days")
     canvases ["ttot_saturation"].SaveAs (plot_dir+"TimeTotalCasesSaturation.pdf")
+
+    
 

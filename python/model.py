@@ -39,6 +39,7 @@ def correct_delta_with_tampons (event_current, parameters_store,string_to_use, f
 
 def schedule_k (event_current, parameters_store,string_to_use):
     reopening_t = 45
+    duration_reopeining = 180
     t0 = parameters_store["initial_conditions"]["t0"]
     k_max = parameters_store[string_to_use]["k"]
     if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "FALSE": return k_max
@@ -47,7 +48,11 @@ def schedule_k (event_current, parameters_store,string_to_use):
     elif (event_current.time-t0) < max_t: return k_max + (k_min-k_max)/abs(max_t-min_t)* (event_current.time-min_t)
     else:
         if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "REOPENING" and (event_current.time-t0) > reopening_t :
-            return k_max
+            if (event_current.time-t0) < reopening_t+duration_reopeining:
+                return k_min +(k_max-k_min)/abs(duration_reopeining)* (event_current.time-reopening_t)
+            else:
+                return k_max
+            # return k_max
         else:
             return k_min
 
