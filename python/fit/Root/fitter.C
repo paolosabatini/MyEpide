@@ -21,6 +21,10 @@ TString decode_var_names(TString label){
   dict [ "alpha_corrbin2" ] =  "Corr. bin 2";
   dict [ "alpha_corrbin3"]  = "Corr. bin 3";
   dict [ "alpha_corrbin4" ]  = "Corr. bin 4";
+  dict [ "alpha_corrbin5" ] =  "Corr. bin 5";
+  dict [ "alpha_corrbin6" ] =  "Corr. bin 6";
+  dict [ "alpha_corrbin7"]  = "Corr. bin 7";
+  dict [ "alpha_corrbin8" ]  = "Corr. bin 8";
   dict [ "alpha_d2" ]  =  "d_{2}";
   dict [ "alpha_delta" ] =  "#delta";
   dict [ "alpha_gamma" ] = "#gamma";
@@ -140,9 +144,9 @@ void fitter(std::string filename, std::string label) {
   //
   std::cout << GRN <<"Exporting the workspace!" << FIN << std::endl;
   RooWorkspace* w = HistoToWorkspaceFactoryFast (meas).MakeCombinedModel(meas);
-  w->var ("alpha_beta") -> setVal( -1. );
-  w->var ("alpha_corrbin4") -> setVal ( +1. );
-  w->var ("alpha_corrbin2") -> setVal ( +2. );
+  // w->var ("alpha_beta") -> setVal( -1. );
+  // w->var ("alpha_corrbin4") -> setVal ( +1. );
+  // w->var ("alpha_corrbin2") -> setVal ( +2. );
   RooFitResult* r =w->pdf("model_TimeFrame")->fitTo( *w->data( "obsData" ) , RooFit::Save() );
 
   // ================================================================== //
@@ -216,7 +220,7 @@ void fitter(std::string filename, std::string label) {
   graphs["nps"]->Draw("apz");
 
   
-  float min_x = -2.5, max_x=7;
+  float min_x = -3., max_x=7.5;
   graphs["nps"]->GetXaxis()->SetLimits(min_x,max_x);
   graphs["nps"]->GetYaxis()->SetLimits(0,systematics.size()+2+5);
   graphs["nps"]->SetLineWidth(2);

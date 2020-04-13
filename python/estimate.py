@@ -4,7 +4,7 @@ import json
 
 fitname = "fit/plots/aggressive/results.root"
 plot_dir = "fit/plots/"+fitname.split("/")[2]+"/"
-DEBUG=True
+DEBUG=False
 n_pseudo_exp = 1000
 RELATIVE_VARIATION = 0.1
 
@@ -166,6 +166,7 @@ if __name__ == "__main__":
 
             print ("t "+str(histories[i][0].time)+" i "+str( histories[i][0].I)+" e "+str( histories[i][0].E)+" q "+str( histories[i][0].Q)+" r "+str( histories[i][0].R)+" s "+str( histories[i][0].S)+" d "+str( histories[i][0].D))
             print current_parameter["initial_conditions"]
+            print current_parameter[SET_OF_PARAMETERS]
             print i
         for t in range (1, current_parameter["simulation_parameters"]["TIME_MAX"]):
             tmp_event = event (t, current_parameter, SET_OF_PARAMETERS)
