@@ -10,6 +10,7 @@
 \usepackage{xcolor}
 \usepackage{float}
 \usepackage{hyperref}
+\usepackage[title]{appendix}
 
 %%% 
 % Define new style of sections
@@ -25,7 +26,7 @@
 \title{
 \begin{flushleft}
 \rule{\textwidth}{1pt}\\
-  \textsc{\textbf{Elementary study of outbreak evolution adapted to the covid-19 virus example 	}}\\[2mm]
+  \textsc{\textbf{The SEIQRS mathematical model adapted to the covid-19 virus oubreak in Lombardy}}\\[2mm]
 \textsc{\large Paolo Sabatini}\\
 \rule{\textwidth}{1pt}
   \end{flushleft}
@@ -46,7 +47,8 @@
 
 
 \begin{abstract}
-This document collects a brief study of modeling an outbreak. The model framework is Susceptible-Exposed-Infected-Quarantined-Recovered-Susceptible (SEIQRS), present already in litealready in past publicationsrature. Here the model is independently re-implemented, studied and analysed. The effects of the model parameters are checked. The model is tested against the national- and regional-wide Italian COVID-19 outbreak data. A fit against the data is performed to measure the model parameters and to give predictions of the expected outbreak behaviour.
+This document uses the mathematical model Susceptible-Exposed-Infected-Quarantined-Recovered-Susceptible (SEIQRS) in the Small-World approximation. This mathematical framework is used to describe the outbreak of the COVID-19 in Italy, in particular in the most affected region, the Lombardy. To achieve a correct description of the data, the model is slightly modified. The interactions between people are modulated against time to mimic the social-distancing. Moreover corrections based on the number of performed tests are implemented. The model parameters are then measured through Profile Likelihood Fit against data of the oubreak in Lombardy. The fitted parameters are the used to create a baseline simulation of the oubreak and to provide estimations of the outbreak features. These features are then also validated against the actual evolution of the virus. The model provides a robust estimation of the evolution in particular of their shape and evolution. Estimations of the absolute numbers are affected by the large errors due to the fit on a limited time (until April 4th).
+
 \end{abstract}
 \vspace{2cm}
 \tableofcontents
@@ -72,11 +74,18 @@ M.~Liu and L.~Zhao,
 system},
 International Journal of Mathematical Modelling and Numerical Optimisation (2011), vol. 2, no. 1, pp. 51–68.
 
+\bibitem{COVID-Clinical} 
+Jiang, F., Deng, L., Zhang, L. et al., \emph{ Review of the Clinical Characteristics of Coronavirus Disease 2019 (COVID-19)}, J GEN INTERN MED (2020).
+
 \bibitem{Lab24}
 Il Sole 24 Ore,
 \textit{ 
 Coronavirus in Italia, i dati e la mappa},
 \href{https://lab24.ilsole24ore.com/coronavirus/}{https://lab24.ilsole24ore.com/coronavirus/}
+
+\bibitem{WHO}
+World Health Organisation, \emph{Coronavirus disease 2019 (COVID-19)}, \href{https://www.who.int/docs/default-source/coronaviruse/situation-reports/20200414-sitrep-85-covid-19.pdf?sfvrsn=7b8629bb_4}{Situation report, 85.}
+
 
 \bibitem{ROOT}
 I.Antcheva et al., 
@@ -100,5 +109,11 @@ Ministero della Salute, \textit{Covid-19, Ministro Speranza: ``Vicini a R con ze
 \href{http://www.salute.gov.it/portale/news/p3_2_1_1_1.jsp?lingua=italiano&menu=notizie&p=dalministero&id=4429}{News, 9 Aprile 2020.}
 
 \end{thebibliography}
+
+
+\newpage
+\begin{appendices}
+\input{sections/Appendix}
+\end{appendices}
 
 \end{document}
