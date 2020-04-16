@@ -102,6 +102,20 @@
       "i0": 5e-5,
       "t0": 1
     },    
+    "parameters_Lombardia_scheduling_corrected_definitive_v2" :
+    { "beta" : 0.063,
+      "k" : 10,
+      "gamma": 1e-5,
+      "delta": 0.20,
+      "mu" : 0.03,
+      "d" : 6e-3,
+      "d1": 0,
+      "d2": 3e-2,
+      "tau": 5,
+      "N": 10e6,
+      "i0": 5e-5,
+      "t0": 1
+    },    
     "parameters_Lombardia_scheduling_corrected_postfit" :
     { "beta" : 0.046,
       "k" : 11.88,
@@ -114,6 +128,62 @@
       "tau": 5,
       "N": 10e6,
       "i0": 6.25e-5,
+      "t0": 1
+    },    
+    "parameters_Lombardia_scheduling_corrected_postfit_v2" :
+    { "beta" : 0.0602,
+      "k" : 10.18,
+      "gamma": 1e-6,
+      "delta": 0.2,
+      "mu" : 0.03,
+      "d" : 2e-3,
+      "d1": 0,
+      "d2": 0.03,
+      "tau": 5,
+      "N": 10e6,
+      "i0": 5.98e-5,
+      "t0": 1
+    },    
+    "parameters_Lombardia_scheduling_corrected_postfit_reopening45_v2" :
+    { "beta" : 0.0602,
+      "k" : 10.18,
+      "gamma": 1e-6,
+      "delta": 0.2,
+      "mu" : 0.03,
+      "d" : 2e-3,
+      "d1": 0,
+      "d2": 0.03,
+      "tau": 5,
+      "N": 10e6,
+      "i0": 5.98e-5,
+      "t0": 1
+    },    
+    "parameters_Lombardia_scheduling_corrected_postfit_reopening67_v2" :
+    { "beta" : 0.0602,
+      "k" : 10.18,
+      "gamma": 1e-6,
+      "delta": 0.2,
+      "mu" : 0.03,
+      "d" : 2e-3,
+      "d1": 0,
+      "d2": 0.03,
+      "tau": 5,
+      "N": 10e6,
+      "i0": 5.98e-5,
+      "t0": 1
+    },    
+    "parameters_Lombardia_scheduling_corrected_postfit_reopening6months_v2" :
+    { "beta" : 0.0602,
+      "k" : 10.18,
+      "gamma": 1e-6,
+      "delta": 0.2,
+      "mu" : 0.03,
+      "d" : 2e-3,
+      "d1": 0,
+      "d2": 0.03,
+      "tau": 5,
+      "N": 10e6,
+      "i0": 5.98e-5,
       "t0": 1
     },    
     "parameters_Lombardia_scheduling_corrected_postfit_reopening45" :
@@ -162,18 +232,18 @@
 
     "initial_conditions" :
     {
-        "i0" : 6.25e-05,
+        "i0" : 5e-05,
         "t0" : 1
     },
 
     "simulation_parameters":
     {
-	"TIME_MAX" : 120,
-	"SET_OF_PARAMETERS" : "parameters_Lombardia_scheduling_corrected_postfit",
+	"TIME_MAX" : 200,
+	"SET_OF_PARAMETERS" :     "parameters_Lombardia_scheduling_corrected_postfit_reopening6months_v2",
 	"VERBOSE" : "FALSE",
 	"SCAN_PARAMETERS" :  "FALSE",
 	"DISPLAY_DATA" : "Lombardia",
-	"IMPROVED_MODEL" : "TRUE",
+	"IMPROVED_MODEL" : "REOPENING",
 	"SAVE_HISTOGRAMS" : "FALSE",
 	"SCALE_FACTOR" : "FALSE"
     }

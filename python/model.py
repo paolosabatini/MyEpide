@@ -38,7 +38,7 @@ def correct_delta_with_tampons (event_current, parameters_store,string_to_use, f
     # else: return delta_max
 
 def schedule_k (event_current, parameters_store,string_to_use):
-    reopening_t = 66
+    reopening_t = 45
     duration_reopeining = 180
     t0 = parameters_store["initial_conditions"]["t0"]
     k_max = parameters_store[string_to_use]["k"]
@@ -71,6 +71,8 @@ class event:
     e = 0
     D = 0
     d = 0
+    r_i = 0
+    R_I = 0
     delta = 0
     k = 0
     TOT = 0
@@ -91,16 +93,25 @@ class event:
         self.S = self.s * parameters_store[string_to_use]["N"]
         
     def update_e_euler (self, parameters_store, event, event_past, string_to_use):
-        de_dt = parameters_store[string_to_use]["beta"]*self.k*event.s*event.i-parameters_store[string_to_use]["beta"]*self.k*event_past.s*event_past.i
+        de_dt = parameters_store[string_to_use]["beta"]*self.k*event.s*event.i-parameters_store[string_to_use]["beta"]*event_past.k*event_past.s*event_past.i
         self.e = event.e + de_dt*abs(self.time-event.time)
         self.E = self.e * parameters_store[string_to_use]["N"]
-
+        
+            
     def update_i_euler (self, parameters_store, event, event_past, string_to_use):
-        di_dt = parameters_store[string_to_use]["beta"]*self.k*event_past.s*event_past.i-parameters_store[string_to_use]["d1"]*event.i-self.delta*event.i
-        self.i = event.i + di_dt*abs(self.time-event.time)
-        self.I = self.i * parameters_store[string_to_use]["N"]
+        if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "FALSE":
+            di_dt = parameters_store[string_to_use]["beta"]*event_past.k*event_past.s*event_past.i-parameters_store[string_to_use]["d1"]*event.i-self.delta*event.i
+            self.i = event.i + di_dt*abs(self.time-event.time)
+            self.I = self.i * parameters_store[string_to_use]["N"]
+        else:
+            di_dt = parameters_store[string_to_use]["beta"]*event_past.k*event_past.s*event_past.i-parameters_store[string_to_use]["d1"]*event.i-self.delta*event.i-parameters_store[string_to_use]["beta"]*event.i
+            self.i = event.i + di_dt*abs(self.time-event.time)
+            self.I = self.i * parameters_store[string_to_use]["N"]
+            self.r_i = event.r_i + parameters_store[string_to_use]["mu"]*event.i*abs(self.time-event.time)
+            self.R_I = self.r_i * parameters_store[string_to_use]["N"]
         # print ("t " +str(self.time)+" i "+str(self.i)+" I "+str(self.I)+" di/dt "+str( di_dt))
         # print (" di/dt = "+str(parameters_store[string_to_use]["beta"]*self.k*event_past.s*event_past.i)+"-"+str(parameters_store[string_to_use]["d1"]*event.i+self.delta*event.i))
+
     def update_q_euler (self, parameters_store, event, string_to_use):
         dq_dt = self.delta*event.i-parameters_store[string_to_use]["d2"]*event.i-parameters_store[string_to_use]["mu"]*event.q
         self.q = event.q + dq_dt*abs(self.time-event.time)
@@ -123,11 +134,18 @@ class event:
         de_dt = parameters_store[string_to_use]["beta"]*self.k*event_half_point.s*event_half_point.i-parameters_store[string_to_use]["beta"]*event_past.k*event_past.s*event_past.i
         self.e = event_precedent.e + de_dt*abs(self.time-event_precedent.time)
         self.E = self.e * parameters_store[string_to_use]["N"]
-
-        di_dt = parameters_store[string_to_use]["beta"]*event_past.k*event_past.s*event_past.i-parameters_store[string_to_use]["d1"]*event_half_point.i-self.delta*event_half_point.i
-        self.i = event_precedent.i + di_dt*abs(self.time-event_precedent.time)
-        self.I = self.i * parameters_store[string_to_use]["N"]
-        
+                    
+        if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "FALSE":
+            di_dt = parameters_store[string_to_use]["beta"]*event_past.k*event_past.s*event_past.i-parameters_store[string_to_use]["d1"]*event_half_point.i-self.delta*event_half_point.i
+            self.i = event_precedent.i + di_dt*abs(self.time-event_precedent.time)
+            self.I = self.i * parameters_store[string_to_use]["N"]
+        else:
+            di_dt = parameters_store[string_to_use]["beta"]*event_past.k*event_past.s*event_past.i-parameters_store[string_to_use]["d1"]*event_half_point.i-self.delta*event_half_point.i-parameters_store[string_to_use]["mu"]*event_half_point.i
+            self.i = event_precedent.i + di_dt*abs(self.time-event_precedent.time)
+            self.I = self.i * parameters_store[string_to_use]["N"]
+            self.r_i = event_precedent.r_i + parameters_store[string_to_use]["mu"]*event_half_point.i*abs(self.time-event_precedent.time)
+            self.R_I = self.r_i * parameters_store[string_to_use]["N"]
+       
         dq_dt = self.delta*event_half_point.i-parameters_store[string_to_use]["d2"]*event_half_point.i-parameters_store[string_to_use]["mu"]*event_half_point.q
         self.q = event_precedent.q + dq_dt*abs(self.time-event_precedent.time)
         self.Q = self.q * parameters_store[string_to_use]["N"]
@@ -140,9 +158,13 @@ class event:
         self.s = event_precedent.s + ds_dt*abs(self.time-event_precedent.time)
         self.S = self.s * parameters_store[string_to_use]["N"]
 
-        self.d = 1 - self.s - self.e - self.i - self.q - self.r
-        self.D = self.d * parameters_store[string_to_use]["N"]
-
+        if parameters_store["simulation_parameters"]["IMPROVED_MODEL"] == "FALSE":
+            self.d = 1 - self.s - self.e - self.i - self.q - self.r 
+            self.D = self.d * parameters_store[string_to_use]["N"]
+        else:
+            self.d = 1 - self.s - self.e - self.i - self.q - self.r - self.r_i
+            self.D = self.d * parameters_store[string_to_use]["N"]
+            
         self.tot = self.q + self.r + self.d
         self.TOT = self.tot * parameters_store[string_to_use]["N"]
         

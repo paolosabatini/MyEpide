@@ -2,7 +2,7 @@
 
 import json
 
-fitname = "fit/plots/aggressive/results.root"
+fitname = "fit/plots/aggressive_v2/results.root"
 plot_dir = "fit/plots/"+fitname.split("/")[2]+"/"
 DEBUG=False
 n_pseudo_exp = 1000
